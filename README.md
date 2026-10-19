@@ -24,8 +24,15 @@ archetypes/      新文章樣板
 layouts/_partials/extend_head.html   數學公式（KaTeX）
 assets/css/extended/custom.css       少量樣式調整
 tools/check_post.py                  發布前檢查
-CLAUDE.md                            Agent 工作規則
-.claude/skills/publish-inbox/        /publish-inbox 流程
+```
+
+Agent 工作規則、`/publish-inbox` 流程與收件匣放在本儲存庫外的工作區，不隨網站公開：
+
+```
+D:/Website_Workspace/
+  CLAUDE.md、.claude/    Agent 規則與流程（私人儲存庫備份）
+  Website_Inbox/         收件匣（只在本機）
+  Personal_Website/      本儲存庫
 ```
 
 ## 首次設定（Windows）
@@ -39,11 +46,11 @@ CLAUDE.md                            Agent 工作規則
    ```
    安裝後重開終端機，確認 `hugo version` 顯示 `0.168.0` 與 `extended`。
    winget 裝到不同版本時，從 https://github.com/gohugoio/hugo/releases/tag/v0.168.0 下載 `hugo_extended_0.168.0_windows-amd64.zip`。
-2. 把 `Personal_Website` 放在 `D:/Personal_Website`，`Website_Inbox` 放在 `D:/Website_Inbox`。兩者都不要放在 OneDrive 等同步資料夾內。
+2. 把 `Personal_Website` 與 `Website_Inbox` 都放在 `D:/Website_Workspace/` 底下。不要放在 OneDrive 等同步資料夾內。
 3. 修改 `hugo.toml` 中的 `USERNAME`（兩處）與網站名稱。
 4. 本機預覽：
    ```
-   cd D:/Personal_Website
+   cd /d D:\Website_Workspace\Personal_Website
    hugo server -D
    ```
    打開 http://localhost:1313 ，確認「數學公式顯示測試」一文正常。
@@ -64,8 +71,8 @@ CLAUDE.md                            Agent 工作規則
 ## 日常發布
 
 **用 agent：**
-1. 把寫好的 Markdown（或含圖片的資料夾）放進 `D:/Website_Inbox/`。
-2. 在 `D:/Personal_Website` 開啟 Claude Code，輸入 `/publish-inbox`。
+1. 把寫好的 Markdown（或含圖片的資料夾）放進 `D:/Website_Workspace/Website_Inbox/`。
+2. 在 `D:/Website_Workspace` 開啟 Claude Code，輸入 `/publish-inbox`。
 3. 確認 agent 列出的分類與 tags，同意後它會建立 Pull Request。
 4. 到 GitHub 檢查 PR 內容，建置檢查通過後按 Merge，約 1～2 分鐘後上線。
 
@@ -73,7 +80,7 @@ CLAUDE.md                            Agent 工作規則
 ```
 hugo new content notes/my-note/index.md               # 中文札記（預設語言）
 hugo new content content/en/notes/my-note/index.md    # 英文需寫完整路徑
-python tools/check_post.py content/zh-tw/notes/my-note --terms D:/Website_Inbox/_config/sensitive_terms.txt
+python tools/check_post.py content/zh-tw/notes/my-note --terms ../Website_Inbox/_config/sensitive_terms.txt
 ```
 設有分支保護時，手動發布也要開分支與 PR。
 
