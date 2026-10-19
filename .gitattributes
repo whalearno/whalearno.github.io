@@ -1,0 +1,9 @@
+# 文字檔一律以 LF 存放，避免 Windows 與 GitHub 之間換行符號反覆變動
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.webp binary

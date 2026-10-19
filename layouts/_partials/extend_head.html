@@ -1,0 +1,23 @@
+{{- /*
+  數學公式渲染（KaTeX，瀏覽器端）
+  只在 front matter 設定 math: true 的頁面載入，其他頁面不增加負擔。
+  支援：行內 \( ... \)；獨立 $$ ... $$、\[ ... \]
+  KaTeX 版本固定，升級時請先在本機測試。
+*/ -}}
+{{- if or .Params.math .Site.Params.math }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    renderMathInElement(document.querySelector(".post-content") || document.body, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "\\(", right: "\\)", display: false }
+      ],
+      throwOnError: false
+    });
+  });
+</script>
+{{- end }}

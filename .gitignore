@@ -1,0 +1,15 @@
+# Hugo 產生的檔案（由 GitHub Actions 建置，不提交）
+/public/
+/resources/_gen/
+/assets/jsconfig.json
+.hugo_build.lock
+
+# 作業系統與編輯器
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+*.swp
+
+# Claude Code 個人設定（共用規則放在 .claude/settings.json）
+.claude/settings.local.json

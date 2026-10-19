@@ -1,0 +1,172 @@
+# =============================================================
+#  Personal_Website — Hugo 主設定檔
+#  Hugo 版本：0.168.0 Extended（與 .github/workflows 一致）
+#  主題：PaperMod（完整放在 themes/PaperMod，版本記錄於 README.md）
+# =============================================================
+
+# 【必改】上線網址。儲存庫名稱為 <帳號>.github.io 時就是根網址。
+# GitHub Actions 建置時會自動覆寫為正確網址，這裡主要影響本機設定。
+baseURL = "https://whalearno.github.io/"
+
+title = "Chih-Ming Wang"
+theme = "PaperMod"
+
+# 預設語言為繁體中文，放在網站根目錄；英文在 /en/
+defaultContentLanguage = "zh-tw"
+defaultContentLanguageInSubdir = false
+
+# 中日韓文字的字數、摘要、閱讀時間計算
+hasCJKLanguage = true
+
+enableRobotsTXT = true
+enableEmoji = false
+
+[pagination]
+  pagerSize = 10
+
+# 首頁輸出 JSON 給站內搜尋使用
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[taxonomies]
+  tag = "tags"
+
+# -------------------------------------------------------------
+#  Markdown 與數學公式
+#  passthrough 讓 Hugo 原封不動保留公式，交給 KaTeX 在瀏覽器端渲染。
+#  規範：行內公式用 \( ... \)；獨立公式用 $$ ... $$ 或 \[ ... \]
+#  刻意不啟用單一 $ ... $，避免一般文字中的金額被誤判。
+# -------------------------------------------------------------
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [['\[', '\]'], ['$$', '$$']]
+          inline = [['\(', '\)']]
+    [markup.goldmark.renderer]
+      unsafe = false
+  [markup.highlight]
+    noClasses = false
+    codeFences = true
+    guessSyntax = false
+
+# 依 Hugo 官方 GitHub Pages 文件建議設定圖片快取位置
+[caches]
+  [caches.images]
+    dir = ":cacheDir/images"
+
+# -------------------------------------------------------------
+#  PaperMod 共用參數
+# -------------------------------------------------------------
+[params]
+  env = "production"
+  author = "Chih-Ming Wang"
+  defaultTheme = "auto"          # 跟隨瀏覽器，可手動切換
+  disableThemeToggle = false
+  ShowReadingTime = true
+  ShowWordCount = true
+  ShowToc = true
+  TocOpen = false
+  ShowBreadCrumbs = true
+  ShowPostNavLinks = true
+  ShowCodeCopyButtons = true
+  ShowRssButtonInSectionTermList = true
+  ShowShareButtons = false
+  displayFullLangName = true
+  DateFormat = "2006-01-02"
+  math = false                   # 預設不載入 KaTeX；文章 front matter 設 math: true 才載入
+
+  [params.fuseOpts]
+    isCaseSensitive = false
+    shouldSort = true
+    location = 0
+    distance = 1000
+    threshold = 0.3
+    minMatchCharLength = 1
+    keys = ["title", "summary", "content", "tags"]
+
+  # 【可改】社群連結，不需要的整段刪除
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/whalearno"
+  [[params.socialIcons]]
+    name = "rss"
+    url = "index.xml"
+
+# -------------------------------------------------------------
+#  語系
+# -------------------------------------------------------------
+[languages]
+  [languages.zh-tw]
+    label = "繁中"
+    locale = "zh-TW"
+    weight = 1
+    contentDir = "content/zh-tw"
+    title = "Chih-Ming Wang"
+    [languages.zh-tw.params]
+      description = "研究札記與觀點"
+      [languages.zh-tw.params.homeInfoParams]
+        Title = "研究札記與觀點"
+        Content = "數學、物理與人工智慧的研究觀察、推導與思考。"
+    [[languages.zh-tw.menus.main]]
+      name = "札記"
+      pageRef = "/notes"
+      weight = 10
+    [[languages.zh-tw.menus.main]]
+      name = "文章"
+      pageRef = "/essays"
+      weight = 20
+    [[languages.zh-tw.menus.main]]
+      name = "研究成果"
+      pageRef = "/publications"
+      weight = 30
+    [[languages.zh-tw.menus.main]]
+      name = "標籤"
+      pageRef = "/tags"
+      weight = 40
+    [[languages.zh-tw.menus.main]]
+      name = "搜尋"
+      pageRef = "/search"
+      weight = 50
+    [[languages.zh-tw.menus.main]]
+      name = "關於"
+      pageRef = "/about"
+      weight = 60
+
+  [languages.en]
+    label = "EN"
+    locale = "en"
+    weight = 2
+    contentDir = "content/en"
+    title = "Chih-Ming Wang"
+    [languages.en.params]
+      description = "Research Notes & Perspectives"
+      [languages.en.params.homeInfoParams]
+        Title = "Research Notes & Perspectives"
+        Content = "Observations, derivations and reflections on mathematics, physics and AI."
+    [[languages.en.menus.main]]
+      name = "Notes"
+      pageRef = "/notes"
+      weight = 10
+    [[languages.en.menus.main]]
+      name = "Essays"
+      pageRef = "/essays"
+      weight = 20
+    [[languages.en.menus.main]]
+      name = "Publications"
+      pageRef = "/publications"
+      weight = 30
+    [[languages.en.menus.main]]
+      name = "Tags"
+      pageRef = "/tags"
+      weight = 40
+    [[languages.en.menus.main]]
+      name = "Search"
+      pageRef = "/search"
+      weight = 50
+    [[languages.en.menus.main]]
+      name = "About"
+      pageRef = "/about"
+      weight = 60

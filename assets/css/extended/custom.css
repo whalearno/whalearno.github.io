@@ -1,0 +1,13 @@
+/* 少量客製化樣式。PaperMod 會自動載入 assets/css/extended/ 下的 CSS。 */
+
+/* 中文內文行距稍寬，長文較好讀 */
+.post-content {
+  line-height: 1.85;
+}
+
+/* 獨立公式過長時可橫向捲動，不撐破版面 */
+.post-content .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
