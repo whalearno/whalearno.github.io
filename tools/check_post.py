@@ -6,8 +6,8 @@ check_post.py — 發布前檢查（只用 Python 標準函式庫）
   python tools/check_post.py <文章資料夾或 .md 檔> [...] --terms <敏感詞清單>
 
 範例：
-  python tools/check_post.py content/zh-tw/notes/tensor-rigidity --terms D:/Website_Inbox/_config/sensitive_terms.txt
-  python tools/check_post.py --all --terms D:/Website_Inbox/_config/sensitive_terms.txt
+  python tools/check_post.py content/zh-tw/notes/tensor-rigidity --terms ../Website_Inbox/_config/sensitive_terms.txt
+  python tools/check_post.py --all --terms ../Website_Inbox/_config/sensitive_terms.txt
 
 結果：
   ERROR  必須修正，有任何 ERROR 時結束碼為 1，不可發布
