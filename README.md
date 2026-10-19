@@ -30,7 +30,7 @@ Agent 工作規則、`/publish-inbox` 流程與收件匣放在本儲存庫外的
 
 ```
 D:/Website_Workspace/
-  CLAUDE.md、.claude/    Agent 規則與流程（只在本機）
+  CLAUDE.md、.claude/    Agent 規則與流程（不公開）
   Website_Inbox/         收件匣（只在本機）
   Personal_Website/      本儲存庫
 ```
