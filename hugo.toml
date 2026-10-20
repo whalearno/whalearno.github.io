@@ -87,6 +87,16 @@ enableEmoji = false
     minMatchCharLength = 1
     keys = ["title", "summary", "content", "tags"]
 
+  # Footer 研究者連結（PaperMod 原生 footer.text，接在著作權之後）
+  [params.footer]
+    text = "[ORCID](https://orcid.org/0009-0001-3651-1422) · [Zenodo](https://zenodo.org/search?q=creators.orcid%3A0009-0001-3651-1422)"
+
+  # 首頁 JSON-LD（PaperMod 原生 schema_json.html）：以 Person 表示研究者
+  # sameAs 只放永久身分頁；Zenodo 搜尋結果不是身分頁，不放這裡
+  [params.schema]
+    publisherType = "Person"
+    sameAs = ["https://orcid.org/0009-0001-3651-1422"]
+
   # 【可改】社群連結，不需要的整段刪除
   [[params.socialIcons]]
     name = "github"

@@ -77,6 +77,11 @@ ShowWordCount: false
 
 如果這些筆記能引起其他人對數學、物理或科學問題的興趣，並促成進一步的交流，那麼這個網站就已經達到了我建立它的目的。
 
+## 研究者識別與研究成果
+
+- [ORCID](https://orcid.org/0009-0001-3651-1422) — 研究者識別碼
+- [Zenodo](https://zenodo.org/search?q=creators.orcid%3A0009-0001-3651-1422) — 研究成果典藏
+
 ---
 
 *Chih-Ming Wang*
