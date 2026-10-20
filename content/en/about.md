@@ -87,6 +87,11 @@ I am happy to share these evolving thoughts, and I welcome different perspective
 
 If these notes encourage someone to take an interest in a mathematical question, a physical phenomenon, or a scientific idea—and perhaps lead to further discussion—then this website will have served its purpose.
 
+## Research Profiles
+
+- [ORCID](https://orcid.org/0009-0001-3651-1422) — Researcher Identifier
+- [Zenodo](https://zenodo.org/search?q=creators.orcid%3A0009-0001-3651-1422) — Research Outputs
+
 ---
 
 *Chih-Ming Wang*
