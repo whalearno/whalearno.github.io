@@ -23,6 +23,9 @@ LANGS = {"zh-tw", "en"}
 SECTIONS = {"notes", "essays", "publications"}
 REQUIRED = ["title", "date", "draft", "tags", "summary", "math"]
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+DOI_RE = re.compile(r"^10\.\d{4,9}/\S+$")
+DOI_PREFIX_RE = re.compile(r"^(https?://(dx\.)?doi\.org/|doi:\s*)", re.I)
+URL_RE = re.compile(r"^https?://\S+$")
 
 
 def parse_front_matter(text):
@@ -80,6 +83,46 @@ def strip_code(body):
     return re.sub(r"`[^`\n]*`", "", body)
 
 
+def check_citation_fields(fm, md: Path):
+    """引用相關的選填欄位。全部為 WARN：格式不符的值網站不會顯示，但應修正。"""
+    warns = []
+
+    def val(key):
+        v = fm.get(key, "")
+        return v.strip() if isinstance(v, str) else ""
+
+    dois = {}
+    for key in ("doi", "concept_doi"):
+        v = val(key)
+        if not v:
+            continue
+        bare = DOI_PREFIX_RE.sub("", v)
+        if not DOI_RE.match(bare):
+            warns.append(f"{key} 格式不正確，網站不會顯示：{v}（應為 10.xxxx/... 形式）")
+        else:
+            dois[key] = bare.lower()
+    if dois.get("doi") and dois.get("doi") == dois.get("concept_doi"):
+        warns.append("doi 與 concept_doi 相同：版本 DOI 與 concept DOI 不可混用，網站只顯示 doi")
+
+    z = val("zenodo")
+    if z and not re.match(r"^https://zenodo\.org/\S+$", z):
+        warns.append(f"zenodo 應為 https://zenodo.org/ 開頭的真實記錄網址，網站不會顯示：{z}")
+
+    lic, lic_url = val("license"), val("license_url")
+    if lic_url and not URL_RE.match(lic_url):
+        warns.append(f"license_url 不是有效網址，不會輸出：{lic_url}")
+    if lic and not lic_url:
+        warns.append("有 license 但沒有 license_url：機器可讀的授權資訊不會輸出")
+    if lic_url and not lic:
+        warns.append("有 license_url 但沒有 license：引用區塊不會顯示授權名稱")
+
+    pdf = val("pdf_url")
+    if pdf and not URL_RE.match(pdf) and not (md.parent / pdf).is_file():
+        warns.append(f"pdf_url 不是網址，也找不到同資料夾內的檔案，不會輸出：{pdf}")
+
+    return warns
+
+
 def check_file(md: Path, terms):
     errors, warns = [], []
     text = md.read_text(encoding="utf-8")
@@ -128,6 +171,7 @@ def check_file(md: Path, terms):
     if parts and len(parts) == 4 and parts[1] == "publications":
         if not (fm.get("doi") or fm.get("zenodo") or fm.get("arxiv")):
             warns.append("研究成果尚未填入 doi、zenodo 或 arxiv")
+    warns.extend(check_citation_fields(fm, md))
 
     clean = strip_code(body)
 

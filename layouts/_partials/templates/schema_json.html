@@ -1,0 +1,135 @@
+{{- /*
+  覆寫 themes/PaperMod/layouts/_partials/templates/schema_json.html
+  首頁 Person 與 BreadcrumbList 兩段與主題原檔相同；
+  文章段改用 dict + jsonify 產生（標題含引號等字元時仍是有效 JSON），並補上：
+    - notes、publications 使用 ScholarlyArticle；其他頁面維持主題的 BlogPosting
+      （單篇可用 front matter schema_type 指定，例如 "Article"）
+    - url、author 的 ORCID（sameAs）、version、DOI identifier、
+      Zenodo 存檔連結（archivedAt）、license（只在有正式授權網址時）
+  每頁只輸出一個文章物件，不與主題重複。
+*/ -}}
+{{ if .IsHome }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "{{- ( site.Params.schema.publisherType | default "Organization") | title -}}",
+  "name": {{ site.Title }},
+  "url": {{ site.Home.Permalink }},
+  "description": {{ site.Params.description | plainify | truncate 180 | safeHTML }},
+  {{- if (eq site.Params.schema.publisherType "Person") }}
+  "image": {{ site.Params.assets.favicon | default "favicon.ico" | absURL }},
+  {{- else }}
+  "logo": {{ site.Params.assets.favicon | default "favicon.ico" | absURL }},
+  {{- end }}
+  "sameAs": [
+    {{- if site.Params.schema.sameAs }}
+      {{ range $i, $e := site.Params.schema.sameAs }}{{ if $i }}, {{ end }}{{ trim $e " " }}{{ end }}
+    {{- else}}
+      {{ range $i, $e := site.Params.SocialIcons }}{{ if $i }}, {{ end }}{{ trim $e.url " " | safeURL }}{{ end }}
+    {{- end}}
+  ]
+}
+</script>
+{{- else if (or .IsPage .IsSection) }}
+{{/* BreadcrumbList */}}
+{{- $url := replace .Parent.Permalink ( printf "%s" site.Home.Permalink) "" }}
+{{- $lang_url := strings.TrimPrefix ( printf "%s/" .Lang) $url }}
+{{- $bc_list := (split $lang_url "/")}}
+
+{{- $path := "" }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+  {{- range $index, $element := $bc_list }}
+
+    {{- $path = printf "%s%s/" $path $element }}
+    {{- $bc_pg := site.GetPage $path -}}
+
+    {{- if (and ($bc_pg) (gt (len . ) 0))}}
+    {{- if (and $index)}}, {{end }}
+    {
+      "@type": "ListItem",
+      "position": {{ add 1 $index  }},
+      "name": {{ $bc_pg.Name }},
+      "item": {{ $bc_pg.Permalink | safeHTML }}
+    }
+    {{- end }}
+
+  {{- end }}
+  {{- /*  self-page addition  */ -}}
+  {{- if (ge (len $bc_list) 2) }}, {{end }}
+    {
+      "@type": "ListItem",
+      "position": {{len $bc_list}},
+      "name": {{ .Name }},
+      "item": {{ .Permalink | safeHTML }}
+    }
+  ]
+}
+</script>
+{{- if .IsPage }}
+{{- $c := partial "citation/data.html" . }}
+{{- $type := "BlogPosting" }}
+{{- if in (slice "notes" "publications") .Section }}{{ $type = "ScholarlyArticle" }}{{ end }}
+{{- with .Params.schema_type }}{{ $type = . }}{{ end }}
+
+{{- $title := .Title | plainify | htmlUnescape }}
+{{- $keywords := .Params.keywords | default .Params.tags | default slice }}
+{{- $description := .Description | plainify | htmlUnescape }}
+{{- if not $description }}{{ $description = .Summary | plainify | htmlUnescape | strings.TrimSpace }}{{ end }}
+
+{{- $author := dict "@type" "Person" "name" (.Params.author | default site.Params.author) }}
+{{- if and (not .Params.author) site.Params.schema.sameAs }}
+  {{- $author = merge $author (dict "sameAs" site.Params.schema.sameAs) }}
+{{- end }}
+
+{{- $s := dict
+    "@context" "https://schema.org"
+    "@type" $type
+    "headline" $title
+    "name" $title
+    "description" $description
+    "keywords" $keywords
+    "articleBody" (.Content | plainify | htmlUnescape | strings.TrimSpace)
+    "wordCount" .WordCount
+    "inLanguage" (site.Language.Locale | default .Lang)
+    "url" .Permalink
+    "datePublished" (.PublishDate.Format "2006-01-02T15:04:05Z07:00")
+    "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")
+    "author" $author
+    "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
+    "publisher" (dict
+      "@type" (site.Params.schema.publisherType | default "Organization" | title)
+      "name" site.Title
+      "logo" (dict "@type" "ImageObject" "url" (site.Params.assets.favicon | default "favicon.ico" | absURL)))
+}}
+
+{{- if .Params.cover.image }}
+  {{- if ne .Params.cover.relative true }}
+    {{- $s = merge $s (dict "image" (.Params.cover.image | absURL)) }}
+  {{- else }}
+    {{- $s = merge $s (dict "image" (path.Join .RelPermalink .Params.cover.image | absURL)) }}
+  {{- end }}
+{{- else }}
+  {{- $images := partial "templates/_funcs/get-page-images" . }}
+  {{- with index $images 0 }}{{ $s = merge $s (dict "image" .Permalink) }}{{ end }}
+{{- end }}
+
+{{- if $c.enabled }}
+  {{- with $c.version }}{{ $s = merge $s (dict "version" .) }}{{ end }}
+  {{- $ids := slice }}
+  {{- with $c.doi }}{{ $ids = $ids | append (dict "@type" "PropertyValue" "propertyID" "DOI" "value" . "url" $c.doiURL) }}{{ end }}
+  {{- with $c.conceptDoi }}{{ $ids = $ids | append (dict "@type" "PropertyValue" "propertyID" "DOI" "name" "Concept DOI" "value" . "url" $c.conceptDoiURL) }}{{ end }}
+  {{- with $ids }}{{ $s = merge $s (dict "identifier" .) }}{{ end }}
+  {{- with $c.zenodo }}{{ $s = merge $s (dict "archivedAt" .) }}{{ end }}
+  {{- with $c.licenseURL }}{{ $s = merge $s (dict "license" .) }}{{ end }}
+  {{- with $c.reviewStatus }}{{ $s = merge $s (dict "creativeWorkStatus" .) }}{{ end }}
+{{- end }}
+<script type="application/ld+json">
+{{ $s | jsonify (dict "indent" "  ") | safeJS }}
+</script>
+{{- end }}{{/* .IsPage end */}}
+
+{{- end -}}

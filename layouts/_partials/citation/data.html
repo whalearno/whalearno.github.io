@@ -1,0 +1,87 @@
+{{- /*
+  文章引用資料（引用模組、citation meta、JSON-LD 共用）
+  回傳 dict；enabled 為 false 時其他欄位不保證存在。
+
+  選填 front matter（全部可省略，空字串視為未填）：
+    version       版本，例如 "v0.4"
+    doi           已註冊的「版本 DOI」，例如 "10.5281/zenodo.1234567"
+    concept_doi   已註冊的 concept DOI（代表所有版本），不可與 doi 相同
+    zenodo        真實的 https://zenodo.org/ 記錄網址
+    license       單篇授權名稱，例如 "CC BY 4.0"（作者決定後才填）
+    license_url   授權條款的正式網址（http/https）
+    review_status 研究狀態，例如 "Working draft, not peer-reviewed"
+    pdf_url       公開 PDF 網址，或同資料夾內的 PDF 檔名
+    citation      設為 false 時不顯示引用模組
+
+  格式不正確的值一律不輸出（tools/check_post.py 會提出 WARN），
+  確保網站不會顯示假 DOI、無效授權連結或不存在的 PDF。
+*/ -}}
+{{- $p := .Params }}
+{{- $sections := site.Params.citation.sections | default (slice "notes" "essays" "publications") }}
+{{- $enabled := and .IsPage (in $sections .Section) (ne $p.citation false) }}
+{{- $d := dict "enabled" $enabled }}
+
+{{- if $enabled }}
+  {{- $doiRe := `^10\.\d{4,9}/\S+$` }}
+  {{- $doiPrefix := `^(?i)(https?://(dx\.)?doi\.org/|doi:\s*)` }}
+
+  {{- $doi := "" }}
+  {{- with $p.doi }}{{ $v := replaceRE $doiPrefix "" (trim (string .) " ") }}{{ if findRE $doiRe $v }}{{ $doi = $v }}{{ end }}{{ end }}
+  {{- $conceptDoi := "" }}
+  {{- with $p.concept_doi }}{{ $v := replaceRE $doiPrefix "" (trim (string .) " ") }}{{ if and (findRE $doiRe $v) (ne (lower $v) (lower $doi)) }}{{ $conceptDoi = $v }}{{ end }}{{ end }}
+
+  {{- $zenodo := "" }}
+  {{- with $p.zenodo }}{{ $v := trim (string .) " " }}{{ if findRE `^https://zenodo\.org/\S+$` $v }}{{ $zenodo = $v }}{{ end }}{{ end }}
+
+  {{- $license := trim (string ($p.license | default "")) " " }}
+  {{- $licenseURL := "" }}
+  {{- with $p.license_url }}{{ $v := trim (string .) " " }}{{ if findRE `^https?://\S+$` $v }}{{ $licenseURL = $v }}{{ end }}{{ end }}
+
+  {{- $pdf := "" }}
+  {{- with $p.pdf_url }}
+    {{- $v := trim (string .) " " }}
+    {{- if findRE `^https?://\S+$` $v }}{{ $pdf = $v }}
+    {{- else }}{{ with $.Resources.Get $v }}{{ $pdf = .Permalink }}{{ end }}{{ end }}
+  {{- end }}
+
+  {{- $version := trim (string ($p.version | default "")) " " }}
+  {{- $reviewStatus := trim (string ($p.review_status | default "")) " " }}
+
+  {{- $author := site.Params.author | default site.Title }}
+  {{- $title := .Title | plainify | htmlUnescape }}
+  {{- $url := .Permalink }}
+  {{- with $p.canonicalURL }}{{ $url = trim (string .) " " }}{{ end }}
+  {{- $doiURL := cond (ne $doi "") (printf "https://doi.org/%s" $doi) "" }}
+  {{- $conceptDoiURL := cond (ne $conceptDoi "") (printf "https://doi.org/%s" $conceptDoi) "" }}
+  {{- $link := $doiURL | default $url }}
+  {{- $siteName := site.Params.citationSiteName | default site.Title }}
+
+  {{- $year := "n.d." }}
+  {{- if not .Date.IsZero }}{{ $year = string .Date.Year }}{{ end }}
+  {{- $titlePart := $title }}
+  {{- with $version }}{{ $titlePart = printf "%s (%s)" $title . }}{{ end }}
+  {{- /* 以下組成的文字即為畫面顯示與複製的引用內容，兩者一致 */ -}}
+  {{- $prefix := printf "%s. (%s). %s. %s. " $author $year $titlePart $siteName }}
+
+  {{- $d = merge $d (dict
+      "author" $author
+      "title" $title
+      "year" $year
+      "url" $url
+      "link" $link
+      "prefix" $prefix
+      "text" (printf "%s%s" $prefix $link)
+      "version" $version
+      "doi" $doi
+      "doiURL" $doiURL
+      "conceptDoi" $conceptDoi
+      "conceptDoiURL" $conceptDoiURL
+      "zenodo" $zenodo
+      "license" $license
+      "licenseURL" $licenseURL
+      "pdf" $pdf
+      "reviewStatus" $reviewStatus
+  ) }}
+{{- end }}
+
+{{- return $d }}

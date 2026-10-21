@@ -1,0 +1,79 @@
+/* 「引用本文」區塊：沿用 PaperMod 色彩變數，日夜間自動切換 */
+.cite-box {
+  margin-top: 2.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--entry);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--secondary);
+}
+
+.cite-box .cite-heading {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--primary);
+}
+
+.cite-box .cite-text {
+  margin: 0 0 0.5rem;
+  color: var(--content);
+  overflow-wrap: anywhere;
+}
+
+.cite-box a {
+  box-shadow: 0 1px 0 var(--secondary);
+}
+
+.cite-box .cite-meta {
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+.cite-box .cite-meta li {
+  overflow-wrap: anywhere;
+}
+
+.cite-box .cite-label::after {
+  content: ":";
+  margin-inline-end: 0.4em;
+}
+
+.cite-box .cite-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cite-box .cite-copy {
+  min-height: 2.25rem;
+  padding: 0.25rem 0.9rem;
+  border: 1px solid var(--tertiary);
+  border-radius: var(--radius);
+  background: var(--theme);
+  color: var(--primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.cite-box .cite-copy:hover {
+  border-color: var(--secondary);
+}
+
+.cite-box .cite-copy:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.cite-box .cite-status-error {
+  color: #c0392b;
+}
+
+/* Footer 連結在手機上保留足夠點擊間距 */
+.footer a {
+  display: inline-block;
+  padding: 0.15rem 0;
+}

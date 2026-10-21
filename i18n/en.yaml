@@ -1,0 +1,34 @@
+# Site-specific UI strings; merged with themes/PaperMod/i18n/en.yaml
+
+- id: cite_heading
+  translation: "Cite this work"
+
+- id: cite_copy
+  translation: "Copy citation"
+
+- id: cite_copied
+  translation: "Copied"
+
+- id: cite_copy_failed
+  translation: "Copy failed. Please select the citation manually."
+
+- id: cite_version
+  translation: "Version"
+
+- id: cite_concept_doi
+  translation: "All-versions DOI"
+
+- id: cite_zenodo
+  translation: "Archived on Zenodo"
+
+- id: cite_status
+  translation: "Research status"
+
+- id: cite_license
+  translation: "License"
+
+- id: cite_rights_reserved
+  translation: "All rights reserved unless otherwise stated"
+
+- id: cite_reuse_terms
+  translation: "Reuse terms"
