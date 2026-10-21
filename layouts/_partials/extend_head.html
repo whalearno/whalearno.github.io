@@ -21,3 +21,24 @@
   });
 </script>
 {{- end }}
+
+{{- /*
+  學術引用 meta（Highwire Press 格式，Google Scholar 等使用）
+  只輸出確實存在的值：DOI、PDF 沒有就不輸出。canonical 由 PaperMod head.html 負責。
+*/ -}}
+{{- $c := partial "citation/data.html" . }}
+{{- if $c.enabled }}
+<meta name="citation_title" content="{{ $c.title }}">
+<meta name="citation_author" content="{{ site.Params.citation.metaAuthor | default $c.author }}">
+{{- if not .Date.IsZero }}
+<meta name="citation_publication_date" content="{{ .Date.Format "2006/01/02" }}">
+{{- end }}
+<meta name="citation_language" content="{{ site.Language.Locale | default .Lang }}">
+<meta name="citation_abstract_html_url" content="{{ $c.url }}">
+{{- with $c.doi }}
+<meta name="citation_doi" content="{{ . }}">
+{{- end }}
+{{- with $c.pdf }}
+<meta name="citation_pdf_url" content="{{ . }}">
+{{- end }}
+{{- end }}

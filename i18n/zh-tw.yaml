@@ -1,0 +1,34 @@
+# 本站新增的介面文字；與 themes/PaperMod/i18n/zh-tw.yaml 合併使用
+
+- id: cite_heading
+  translation: "引用本文"
+
+- id: cite_copy
+  translation: "複製引用"
+
+- id: cite_copied
+  translation: "已複製"
+
+- id: cite_copy_failed
+  translation: "無法自動複製，請手動選取引用內容。"
+
+- id: cite_version
+  translation: "版本"
+
+- id: cite_concept_doi
+  translation: "所有版本 DOI"
+
+- id: cite_zenodo
+  translation: "Zenodo 存檔版本"
+
+- id: cite_status
+  translation: "研究狀態"
+
+- id: cite_license
+  translation: "授權"
+
+- id: cite_rights_reserved
+  translation: "著作權保留（除另有註明）"
+
+- id: cite_reuse_terms
+  translation: "使用說明"

@@ -1,0 +1,49 @@
+{{- /*
+  引用本文 / Cite this work
+  畫面上的 .cite-text 文字即為複製內容（assets/js/cite.js 讀取 textContent）。
+  只顯示確實存在的欄位；沒有版本、DOI、Zenodo 時對應行不出現。
+*/ -}}
+{{- $c := partial "citation/data.html" . }}
+{{- if $c.enabled }}
+{{- $reuse := site.GetPage "/citation-reuse" }}
+<section class="cite-box" aria-labelledby="cite-heading">
+  <h2 id="cite-heading" class="cite-heading">{{ i18n "cite_heading" }}</h2>
+  <p class="cite-text">{{ $c.prefix }}<a href="{{ $c.link }}">{{ $c.link }}</a></p>
+  <ul class="cite-meta">
+    {{- with $c.version }}
+    <li><span class="cite-label">{{ i18n "cite_version" }}</span>{{ . }}</li>
+    {{- end }}
+    {{- with $c.doi }}
+    <li><span class="cite-label">DOI</span><a href="{{ $c.doiURL }}">{{ . }}</a></li>
+    {{- end }}
+    {{- with $c.conceptDoi }}
+    <li><span class="cite-label">{{ i18n "cite_concept_doi" }}</span><a href="{{ $c.conceptDoiURL }}">{{ . }}</a></li>
+    {{- end }}
+    {{- with $c.zenodo }}
+    <li><a href="{{ . }}" rel="noopener">{{ i18n "cite_zenodo" }}</a></li>
+    {{- end }}
+    {{- with $c.pdf }}
+    <li><a href="{{ . }}">PDF</a></li>
+    {{- end }}
+    {{- with $c.reviewStatus }}
+    <li><span class="cite-label">{{ i18n "cite_status" }}</span>{{ . }}</li>
+    {{- end }}
+    <li>
+      <span class="cite-label">{{ i18n "cite_license" }}</span>
+      {{- if $c.license }}
+        {{- if $c.licenseURL }}<a href="{{ $c.licenseURL }}" rel="license noopener">{{ $c.license }}</a>{{ else }}{{ $c.license }}{{ end }}
+      {{- else }}
+        {{- i18n "cite_rights_reserved" }}
+      {{- end }}
+      {{- with $reuse }} · <a href="{{ .RelPermalink }}">{{ i18n "cite_reuse_terms" }}</a>{{ end }}
+    </li>
+  </ul>
+  <div class="cite-actions">
+    <button type="button" class="cite-copy" data-cite-copy hidden
+      data-ok="{{ i18n "cite_copied" }}" data-fail="{{ i18n "cite_copy_failed" }}">{{ i18n "cite_copy" }}</button>
+    <span class="cite-status" role="status" aria-live="polite"></span>
+  </div>
+</section>
+{{- $js := resources.Get "js/cite.js" | minify | fingerprint }}
+<script defer src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" crossorigin="anonymous"></script>
+{{- end }}

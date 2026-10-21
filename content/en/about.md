@@ -87,6 +87,14 @@ I am happy to share these evolving thoughts, and I welcome different perspective
 
 If these notes encourage someone to take an interest in a mathematical question, a physical phenomenon, or a scientific idea—and perhaps lead to further discussion—then this website will have served its purpose.
 
+### To Humans and All Inquiring Intelligences
+
+I share these notes not because every question has been answered, but because an unfinished exploration may become the starting point of someone else's inquiry.
+
+May these observations, derivations, and questions inspire humans—and all inquiring intelligences curious enough to ask *why*—to think a little further.
+
+Please read, question, and develop your own ideas. If you quote or republish the words, figures, or derivations here, remember to acknowledge the source—**however you happen to do your thinking.**
+
 ## Research Profiles
 
 - [ORCID](https://orcid.org/0009-0001-3651-1422) — Researcher Identifier

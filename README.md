@@ -21,9 +21,14 @@ content/en/      English（/en/）
   essays/        觀點文章
   publications/  研究成果（DOI、Zenodo、arXiv）
 archetypes/      新文章樣板
-layouts/_partials/extend_head.html   數學公式（KaTeX）
+layouts/_partials/extend_head.html   數學公式（KaTeX）與學術引用 meta
+layouts/_partials/citation/          文章「引用本文」區塊與引用資料
+layouts/_partials/templates/schema_json.html   JSON-LD（覆寫主題同名檔）
 assets/css/extended/custom.css       少量樣式調整
+assets/js/cite.js                    複製引用按鈕
+i18n/                                本站新增的介面文字（與主題合併）
 tools/check_post.py                  發布前檢查
+tools/test_citation.py               引用功能建置測試（測試資料只在暫存資料夾）
 ```
 
 Agent 工作規則、`/publish-inbox` 流程與收件匣放在本儲存庫外的工作區，不隨網站公開：
@@ -92,6 +97,25 @@ python tools/check_post.py content/zh-tw/notes/my-note --terms ../Website_Inbox/
 - 網址名稱（資料夾名）用小寫英文與連字號，發布後不改
 - 不使用 HTML 標籤（`hugo.toml` 設定為不顯示原始 HTML）
 - `draft: true` 不會發布，但**原始檔在公開儲存庫中仍看得到**；不想公開的草稿不要放進本專案
+
+## 引用與版本欄位
+
+`notes`、`essays`、`publications` 的文章結尾會自動顯示「引用本文」，引用文字由標題、`date` 年份與網址產生。
+以下欄位都是選填，**只在確實存在時填寫**；空白或格式不符的值不會顯示（`check_post.py` 會提出 WARN）。
+
+| 欄位 | 說明 |
+|---|---|
+| `version` | 版本，例如 `v0.4` |
+| `doi` | 已註冊的**版本 DOI**（`10.xxxx/...`）。填了之後引用文字改用 `https://doi.org/...` |
+| `concept_doi` | 已註冊的 concept DOI（代表所有版本），不可與 `doi` 相同 |
+| `zenodo` | 真實的 `https://zenodo.org/...` 記錄網址 |
+| `license`、`license_url` | 單篇授權，作者決定後才填；未填即「著作權保留」並連到引用與轉載頁 |
+| `review_status` | 研究狀態，例如 `Working draft, not peer-reviewed` |
+| `pdf_url` | 公開 PDF 網址，或同資料夾內的 PDF 檔名 |
+| `citation: false` | 不顯示引用區塊 |
+| `schema_type` | 指定 JSON-LD 類型（預設 notes／publications 為 `ScholarlyArticle`，其他為 `BlogPosting`） |
+
+修改引用相關版面後執行 `python tools/test_citation.py`（需要 hugo）。
 
 ## 測試完成後
 

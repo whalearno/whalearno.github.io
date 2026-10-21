@@ -88,8 +88,13 @@ enableEmoji = false
     keys = ["title", "summary", "content", "tags"]
 
   # Footer 研究者連結（PaperMod 原生 footer.text，接在著作權之後）
-  [params.footer]
-    text = "[ORCID](https://orcid.org/0009-0001-3651-1422) · [Zenodo](https://zenodo.org/search?q=creators.orcid%3A0009-0001-3651-1422)"
+  # 各語系分別設定於 [languages.*.params.footer]，以便「引用與轉載」連到同語系頁面
+
+  # 文章引用模組（layouts/_partials/citation/）
+  # 適用分類：notes、essays、publications；單篇可設 citation: false 關閉
+  [params.citation]
+    sections = ["notes", "essays", "publications"]
+    metaAuthor = "Wang, Chih-Ming"   # citation_author 學術 meta 格式（姓, 名）
 
   # 首頁 JSON-LD（PaperMod 原生 schema_json.html）：以 Person 表示研究者
   # sameAs 只放永久身分頁；Zenodo 搜尋結果不是身分頁，不放這裡
@@ -115,8 +120,12 @@ enableEmoji = false
     weight = 1
     contentDir = "content/zh-tw"
     title = "Chih-Ming Wang"
+    copyright = "© Chih-Ming Wang. All rights reserved unless otherwise stated."
     [languages.zh-tw.params]
       description = "研究札記與觀點"
+      citationSiteName = "研究札記與觀點"
+      [languages.zh-tw.params.footer]
+        text = "[ORCID](https://orcid.org/0009-0001-3651-1422) · [Zenodo](https://zenodo.org/search?q=creators.orcid%3A0009-0001-3651-1422) · [引用與轉載](/citation-reuse/)"
       [languages.zh-tw.params.homeInfoParams]
         Title = "研究札記與觀點"
         Content = "數學、物理與人工智慧的研究觀察、推導與思考。"
@@ -151,8 +160,12 @@ enableEmoji = false
     weight = 2
     contentDir = "content/en"
     title = "Chih-Ming Wang"
+    copyright = "© Chih-Ming Wang. All rights reserved unless otherwise stated."
     [languages.en.params]
       description = "Research Notes & Perspectives"
+      citationSiteName = "Research Notes & Perspectives"
+      [languages.en.params.footer]
+        text = "[ORCID](https://orcid.org/0009-0001-3651-1422) · [Zenodo](https://zenodo.org/search?q=creators.orcid%3A0009-0001-3651-1422) · [Citation & Reuse](/en/citation-reuse/)"
       [languages.en.params.homeInfoParams]
         Title = "Research Notes & Perspectives"
         Content = "Observations, derivations and reflections on mathematics, physics and AI."
