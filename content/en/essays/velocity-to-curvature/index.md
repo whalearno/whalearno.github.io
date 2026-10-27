@@ -4,15 +4,16 @@ date: 2026-10-22
 lastmod: 2026-10-27
 draft: false
 tags: ["Relativity", "Spacetime Geometry", "Philosophy of Science"]
-summary: "Following intuitions from relative velocity through acceleration, rotation, conservation, and geodesics, these notes ask how the mathematical objects and observational procedures behind unchanged physical terms shift as relativity connects different phenomena, without claiming any contradiction in the theory."
+summary: "Following intuitions from relative velocity through acceleration, rotation, conservation, and geodesics, this essay asks how the mathematical objects and observational procedures behind unchanged physical terms shift as relativity connects different phenomena, without claiming any contradiction in the theory."
 math: true
+aliases: ["/notes/velocity-to-curvature/"]
 ---
 
-## — Research Notes on Motion, Rotation, Conservation, and Spacetime Geometry
+## — A Conceptual Analysis of Motion, Rotation, Conservation, and Spacetime Geometry
 
 **Version:** v0.3-r1  
 **Dates:** 2026-10-22 (original manuscript); 2026-10-27 (r1 revision)  
-**Nature:** Conceptual analysis of relativity and philosophy of physics; exploratory research notes  
+**Nature:** Conceptual analysis of relativity and philosophy of physics; perspective essay  
 **Editorial history:** Building on v0.2, the narrative was reorganized by integrating five conceptual cautions from the former Section 11 into the earlier sections where they belong. The notation now explicitly distinguishes the four-velocity \( U^\mu \) of a single worldline from the four-velocity field \( u^\mu \) of a congruence. The Raychaudhuri equation connects the kinematic decomposition to tidal effects and focusing, as well as to cosmic expansion. The original physical claims and the three-level distinction among *established mathematical relations, observable effects, and philosophical questions* remain unchanged.  
 **r1 minor revision:** Section 2 now includes the geodesic deviation (Jacobi) equation, with its assumptions concerning neighboring geodesics, infinitesimal separation vectors, and curvature sign conventions. Section 6 adds a comparison with the Raychaudhuri equation. The structure and principal arguments of the remaining sections are unchanged.
 
@@ -226,7 +227,7 @@ We therefore cannot simply say, “Energy disappears into thin air, so a fundame
 
 Gravitational energy presents an even more difficult issue. Connection coefficients can be made to vanish at an individual event by choosing local inertial coordinates, whereas curvature itself cannot. Consequently, certain gravitational energy pseudotensors constructed from connection coefficients depend on the coordinate system. **This does not mean that real gravitational waves carry no energy, nor does it mean that the equivalence principle invalidates every possible definition of gravitational energy.** Averaged effective gravitational-wave energy, quasilocal energy, and fluxes defined at infinity are all meaningful concepts whose domains of applicability must be specified.
 
-The question worth preserving in these notes is therefore: **What additional symmetries, observers, and boundary conditions are needed to connect local dynamical balance relations to global conserved quantities?** It is noteworthy that a 2026 study of Brown–York quasilocal energy also shows how the redshift problem in an expanding universe can be reformulated within a particular quasilocal balance framework. This offers a possible route for interpretation and calculation; it does not mean that every competing definition has been uniquely settled.
+The question worth preserving in this essay is therefore: **What additional symmetries, observers, and boundary conditions are needed to connect local dynamical balance relations to global conserved quantities?** It is noteworthy that a 2026 study of Brown–York quasilocal energy also shows how the redshift problem in an expanding universe can be reformulated within a particular quasilocal balance framework. This offers a possible route for interpretation and calculation; it does not mean that every competing definition has been uniquely settled.
 
 ## 9. Is Spacetime Curved, or Does a Spin-Two Field Change Our Clocks and Rulers?
 
@@ -303,7 +304,7 @@ This essay raises four questions worthy of further, separate study.
 
 The mathematical relationship between SR and GR is clear and successful; their predictions cannot be rejected simply because everyday intuition finds them uncomfortable. Yet each step—from velocity to rotation, acceleration to curvature, local balance to global energy, field representation to geometric reality, and test particles to their own gravity—introduces new physical objects, necessary conditions, or approximation procedures.
 
-The question posed in these notes is not “Can relativity be made consistent?” It is this: **When relativity connects different phenomena, does its account clearly tell us which relationships are being connected?**
+The question posed in this essay is not “Can relativity be made consistent?” It is this: **When relativity connects different phenomena, does its account clearly tell us which relationships are being connected?**
 
 Beyond precise calculations and observational verification, insisting that physical narratives identify their domains of definition, symmetries, geometric premises, and boundaries of idealization is not an act of opposition to an established theory. It is a demand for a more rigorous understanding of a successful one.
 
