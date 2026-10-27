@@ -5,6 +5,22 @@
   line-height: 1.85;
 }
 
+/* 首頁「最新發表」小標題與空狀態（layouts/_partials/home_info.html） */
+.home-list-heading {
+  margin: 0 0 var(--gap);
+  font-size: 18px;
+  color: var(--secondary);
+}
+
+.home-empty {
+  color: var(--secondary);
+}
+
+/* 清單中的類型標記（札記／文章），沿用主題文字色 */
+.entry-type {
+  color: var(--primary);
+}
+
 /* 獨立公式過長時可橫向捲動，不撐破版面 */
 .post-content .katex-display {
   overflow-x: auto;

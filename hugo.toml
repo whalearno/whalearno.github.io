@@ -78,6 +78,11 @@ enableEmoji = false
   DateFormat = "2006-01-02"
   math = false                   # 預設不載入 KaTeX；文章 front matter 設 math: true 才載入
 
+  # 首頁「最新發表」的內容來源（PaperMod list.html 讀 site.Params.mainSections）
+  # notes 與 essays 混合，依 date 由新到舊；lastmod 不影響排序。
+  # 新文章只要放進這兩個分類，就會自動出現在首頁，不需手動維護。
+  mainSections = ["notes", "essays"]
+
   [params.fuseOpts]
     isCaseSensitive = false
     shouldSort = true
@@ -137,9 +142,11 @@ enableEmoji = false
       name = "文章"
       pageRef = "/essays"
       weight = 20
+    # 研究成果直接連到 Zenodo（PaperMod 對外部網址自動加 ↗ 標記）
+    # 舊網址 /publications/ 仍保留為相容入口，只是不放在主導覽
     [[languages.zh-tw.menus.main]]
       name = "研究成果"
-      pageRef = "/publications"
+      url = "https://zenodo.org/search?q=creators.orcid%3A0009-0001-3651-1422"
       weight = 30
     [[languages.zh-tw.menus.main]]
       name = "標籤"
@@ -168,7 +175,7 @@ enableEmoji = false
         text = "[ORCID](https://orcid.org/0009-0001-3651-1422) · [Zenodo](https://zenodo.org/search?q=creators.orcid%3A0009-0001-3651-1422) · [Citation & Reuse](/en/citation-reuse/)"
       [languages.en.params.homeInfoParams]
         Title = "Research Notes & Perspectives"
-        Content = "Observations, derivations and reflections on mathematics, physics and AI."
+        Content = "Observations, derivations, and reflections on mathematics, physics, and artificial intelligence."
     [[languages.en.menus.main]]
       name = "Notes"
       pageRef = "/notes"
@@ -179,7 +186,7 @@ enableEmoji = false
       weight = 20
     [[languages.en.menus.main]]
       name = "Publications"
-      pageRef = "/publications"
+      url = "https://zenodo.org/search?q=creators.orcid%3A0009-0001-3651-1422"
       weight = 30
     [[languages.en.menus.main]]
       name = "Tags"

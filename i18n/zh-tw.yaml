@@ -32,3 +32,17 @@
 
 - id: cite_reuse_terms
   translation: "使用說明"
+
+# 首頁「最新發表」清單（layouts/_partials/home_info.html、post_meta.html）
+
+- id: home_latest
+  translation: "最新發表"
+
+- id: home_empty
+  translation: "目前尚無公開的札記或文章。"
+
+- id: type_notes
+  translation: "札記"
+
+- id: type_essays
+  translation: "文章"
