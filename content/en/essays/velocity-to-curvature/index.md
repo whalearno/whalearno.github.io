@@ -14,8 +14,6 @@ aliases: ["/notes/velocity-to-curvature/"]
 **Version:** v0.3-r1  
 **Dates:** 2026-10-22 (original manuscript); 2026-10-27 (r1 revision)  
 **Nature:** Conceptual analysis of relativity and philosophy of physics; perspective essay  
-**Editorial history:** Building on v0.2, the narrative was reorganized by integrating five conceptual cautions from the former Section 11 into the earlier sections where they belong. The notation now explicitly distinguishes the four-velocity \( U^\mu \) of a single worldline from the four-velocity field \( u^\mu \) of a congruence. The Raychaudhuri equation connects the kinematic decomposition to tidal effects and focusing, as well as to cosmic expansion. The original physical claims and the three-level distinction among *established mathematical relations, observable effects, and philosophical questions* remain unchanged.  
-**r1 minor revision:** Section 2 now includes the geodesic deviation (Jacobi) equation, with its assumptions concerning neighboring geodesics, infinitesimal separation vectors, and curvature sign conventions. Section 6 adds a comparison with the Raychaudhuri equation. The structure and principal arguments of the remaining sections are unchanged.
 
 ### Abstract
 
