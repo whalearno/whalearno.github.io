@@ -32,3 +32,17 @@
 
 - id: cite_reuse_terms
   translation: "Reuse terms"
+
+# Home "Latest" list (layouts/_partials/home_info.html, post_meta.html)
+
+- id: home_latest
+  translation: "Latest"
+
+- id: home_empty
+  translation: "No notes or essays have been published in English yet."
+
+- id: type_notes
+  translation: "Note"
+
+- id: type_essays
+  translation: "Essay"

@@ -1,7 +1,7 @@
 ---
 title: "數學公式顯示測試"
 date: 2026-10-19
-draft: false
+draft: true
 tags: ["Test"]
 summary: "確認行內與獨立公式、矩陣、對齊式在網站上正確顯示。測試完成後可刪除或改為 draft: true。"
 math: true

@@ -1,0 +1,30 @@
+{{- /*
+  覆寫 themes/PaperMod/layouts/_partials/home_info.html
+  原版內容不變，另在後面加上：
+  - 有文章時：「最新發表」小標題（清單本身仍由 PaperMod list.html 產生與分頁）
+  - 沒有文章時：簡短的空狀態說明
+  文章篩選條件與 PaperMod list.html 首頁相同，且 site.RegularPages 只含目前語系。
+  升級 PaperMod 時，請比對原版是否有變動。
+*/ -}}
+{{- with site.Params.homeInfoParams }}
+<article class="first-entry home-info">
+    <header class="entry-header">
+        <h1>{{ .Title | markdownify }}</h1>
+    </header>
+    <div class="entry-content md-content">
+        {{ $opts := dict "display" "block" }}
+        {{ .Content | $.Page.RenderString $opts }}
+    </div>
+    <footer class="entry-footer">
+        {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
+    </footer>
+</article>
+{{- end -}}
+
+{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+{{- $pages = where $pages "Params.hiddenInHomeList" "!=" "true" }}
+{{- if $pages }}
+<h2 class="home-list-heading">{{ i18n "home_latest" }}</h2>
+{{- else }}
+<p class="home-empty">{{ i18n "home_empty" }}</p>
+{{- end }}

@@ -1,0 +1,37 @@
+{{- /*
+  覆寫 themes/PaperMod/layouts/_partials/post_meta.html
+  與原版唯一差異：在日期前加上文章類型（札記／文章、Note／Essay），
+  讓首頁混合清單能分辨來源分類。只對 site.Params.mainSections 內的分類顯示。
+  升級 PaperMod 時，請比對原版是否有變動。
+*/ -}}
+{{- $meta := slice }}
+
+{{- if in site.Params.mainSections .Section -}}
+    {{- with i18n (printf "type_%s" .Section) -}}
+        {{- $meta = $meta | append (printf "<span class='entry-type'>%s</span>" .) }}
+    {{- end }}
+{{- end }}
+
+{{- if not .Date.IsZero -}}
+    {{- $meta = $meta | append (printf "<span title='%s'>%s</span>" (.Date | time.Format "2006-01-02T15:04:05-07:00") (.Date | time.Format (default ":date_long" site.Params.DateFormat))) }}
+{{- end }}
+
+{{- if (.Param "ShowReadingTime") -}}
+    {{- $meta = $meta | append (printf "<span>%s</span>" (i18n "read_time" .ReadingTime | default (printf "%d min" .ReadingTime))) }}
+{{- end }}
+
+{{- if (.Param "ShowWordCount") -}}
+    {{- $meta = $meta | append (printf "<span>%s</span>" (i18n "words" .WordCount | default (printf "%d words" .WordCount))) }}
+{{- end }}
+
+{{- if not (.Param "hideAuthor") -}}
+    {{- with (partial "author.html" .) }}
+        {{- $meta = $meta | append (printf "<span>%s</span>" .) }}
+    {{- end }}
+{{- end }}
+
+{{/* Combine all meta information into a single string with separators and render it as HTML.*/}}
+
+{{- with $meta }}
+    {{- delimit . "&nbsp;·&nbsp;" | safeHTML -}}
+{{- end -}}
