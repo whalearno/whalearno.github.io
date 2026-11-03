@@ -638,7 +638,7 @@ r=Y/X,\quad \dot r=1-\varepsilon r^2\\[2mm]
 \tag{11.1}
 $$
 
-以下問題值得後續拆成獨立研究節點，而不是在 v0.1 中直接聲稱已解決。
+以下問題值得後續拆成獨立研究節點，本文並未解決這些問題。
 
 **問題 A｜生成元分類與函數族：** 對更一般的矩陣生成元、特定子群及不同射影空間，能否建立適合函數逼近的清晰分類？哪些條件只是座標描述，哪些對應真正不變的代數特徵？
 
@@ -667,7 +667,7 @@ $$
 
 但「同一組數學工具可以描述多種對象」與「多種對象具有相同的物理或學習機制」是兩回事。本文最大的價值在於提供一條**可讀、可驗證、且適合跨領域比較的數學解釋路徑**，而不是提出新激活函數、新網路架構或新定理。
 
-本次加入的兩張幾何示意圖，使生成元與射影讀出的對應更加直觀。若將來擴充成對外發表的文章，仍應補足嚴格的函數空間條件、文獻重疊分析，並選定一個具有可檢驗新增推論的研究問題。此時可從「研究札記」發展為「觀點型數學文章」或更正式的數學研究稿。
+文中的兩張幾何示意圖，使生成元與射影讀出的對應更加直觀。本文尚未處理嚴格的函數空間條件與系統性的文獻重疊分析，也還沒有提出具可檢驗新增推論的研究問題。
 
 ---
 
@@ -731,4 +731,4 @@ $$
 5. **Jacot, A., Gabriel, F., & Hongler, C. (2018).** “Neural Tangent Kernel: Convergence and Generalization in Neural Networks.” *NeurIPS 2018*. [會議論文](https://papers.nips.cc/paper_files/paper/2018/hash/5a4be1fa34e62bb8a6ec6b91d2462f5a-Abstract.html)。以核描述參數學習引起的函數演化。
 6. **Rahaman, N., et al. (2019).** “On the Spectral Bias of Neural Networks.” *ICML 2019*. [PMLR](https://proceedings.mlr.press/v97/rahaman19a.html)。用頻譜分析研究神經網路對不同頻率的學習速度。
 7. **Tancik, M., et al. (2020).** “Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains.” *NeurIPS 2020*. [會議論文](https://proceedings.neurips.cc/paper_files/paper/2020/hash/55053683268957697aa39fba6f231c68-Abstract.html)；**Sitzmann, V., et al. (2020).** “Implicit Neural Representations with Periodic Activation Functions.” *NeurIPS 2020*. [會議論文](https://proceedings.neurips.cc/paper_files/paper/2020/hash/53c04118df112c13a8c34b38343b9c10-Abstract.html)。展示傅立葉特徵與正弦激活在神經表示中的實務價值。
-8. **標準數學背景**：矩陣指數、\( SL(2,\mathbb R) \) 單參數子群、Möbius／射影作用、Riccati 方程與傅立葉分析，皆為既有數學理論。本版僅使用可由式 (4.1)–(5.5) 直接檢驗的基本特例；日後正式發表宜補充系統性教科書引用。
+8. **標準數學背景**：矩陣指數、\( SL(2,\mathbb R) \) 單參數子群、Möbius／射影作用、Riccati 方程與傅立葉分析，皆為既有數學理論。本文僅使用可由式 (4.1)–(5.5) 直接檢驗的基本特例，未另列系統性的教科書引用。

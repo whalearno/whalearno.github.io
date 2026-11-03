@@ -638,7 +638,7 @@ r=Y/X,\quad \dot r=1-\varepsilon r^2\\[2mm]
 \tag{11.1}
 $$
 
-The questions below should be separated into independent research tasks rather than presented as solved within v0.1.
+The questions below are better treated as independent research tasks; this note does not resolve them.
 
 **Question A | Generator classification and function families.** For more general matrix generators, selected subgroups, and different projective spaces, can we formulate a clear classification useful for function approximation? Which conditions are merely descriptions in chosen coordinates, and which express genuinely invariant algebraic properties?
 
@@ -667,7 +667,7 @@ The central thought of this note is that **the apparent complexity of a function
 
 However, saying that **the same mathematical tools can describe different objects** is not the same as saying that **those objects share identical physical or learning mechanisms**. The principal value of this note is a **readable, verifiable mathematical route for cross-disciplinary comparison**, not a new activation function, network architecture, or theorem.
 
-The two geometric illustrations added in this revision help make the structural interpretation explicit. Before developing the note into an externally published article, one should still refine its function-space assumptions, undertake a more systematic assessment of overlap with existing literature, and identify a research question yielding a testable additional prediction. It could then develop from a **research note** into a **perspective-oriented mathematical article** or a more formal mathematical research paper.
+The two geometric illustrations help make the structural interpretation explicit. This note does not yet address rigorous function-space assumptions or a systematic assessment of overlap with the existing literature, and it does not yet pose a research question yielding a testable additional prediction.
 
 ---
 
@@ -731,4 +731,4 @@ The following references support different aspects of the discussion. They shoul
 5. **Jacot, A., Gabriel, F., & Hongler, C. (2018).** “Neural Tangent Kernel: Convergence and Generalization in Neural Networks.” *NeurIPS 2018*. [Conference paper](https://papers.nips.cc/paper_files/paper/2018/hash/5a4be1fa34e62bb8a6ec6b91d2462f5a-Abstract.html). Describes function evolution induced by parameter learning through a kernel.
 6. **Rahaman, N., et al. (2019).** “On the Spectral Bias of Neural Networks.” *ICML 2019*. [PMLR](https://proceedings.mlr.press/v97/rahaman19a.html). Studies learning rates for different frequencies through spectral analysis.
 7. **Tancik, M., et al. (2020).** “Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains.” *NeurIPS 2020*. [Conference paper](https://proceedings.neurips.cc/paper_files/paper/2020/hash/55053683268957697aa39fba6f231c68-Abstract.html); **Sitzmann, V., et al. (2020).** “Implicit Neural Representations with Periodic Activation Functions.” *NeurIPS 2020*. [Conference paper](https://proceedings.neurips.cc/paper_files/paper/2020/hash/53c04118df112c13a8c34b38343b9c10-Abstract.html). Demonstrate the practical value of Fourier features and sinusoidal activations for neural representations.
-8. **Standard mathematical background.** Matrix exponentials, one-parameter subgroups of \( SL(2,\mathbb R) \), Möbius/projective actions, Riccati equations, and Fourier analysis are established mathematical theories. This note uses only elementary special cases directly checkable from Eqs. (4.1)–(5.5). A future formal publication should add systematic textbook references.
+8. **Standard mathematical background.** Matrix exponentials, one-parameter subgroups of \( SL(2,\mathbb R) \), Möbius/projective actions, Riccati equations, and Fourier analysis are established mathematical theories. This note uses only elementary special cases directly checkable from Eqs. (4.1)–(5.5) and does not list systematic textbook references.
