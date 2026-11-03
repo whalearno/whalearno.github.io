@@ -1,269 +1,207 @@
 ---
 title: "從矩陣指數到非線性函數：傅立葉、雙曲變換與神經學習的共同作用結構"
 date: 2026-11-02
+lastmod: 2026-11-03
 draft: false
 tags: ["Matrix Exponential", "Fourier Analysis", "Projective Dynamics", "Neural Networks"]
 summary: "由自然指數與矩陣生成元出發，把圓周旋轉、雙曲變換與冪零剪切放進同一條推導，說明線性矩陣流如何經射影讀出呈現 tanh 等非線性函數，並以傅立葉分析與神經學習作為對照，同時標明這些比較的適用界線。"
 math: true
 ---
 
-## ——從自然指數、生成元代數到射影表示與張量作用
+## ——從圓周模態、線性生成元到射影表示與張量作用
 
-
-> **本文定位**：這是一篇具有數學推導的研究札記，而非聲稱發現新定理的研究論文。主角是**自然指數所生成的線性作用、射影表示與張量結構**；傅立葉、Lorentz 轉換及神經單元只是相互對照的觀察窗口。本文把已知的矩陣指數、李群／射影作用、調和分析與函數微分放進一條可檢查的敘述路徑。其價值首先在**問題組織、跨領域的解釋視角與適用界線**，不主張這些基本恆等式具有原創性。
 
 ## 摘要
 
-一個簡單的圓周模態，透過疊加可以逼近複雜曲線；另一個由雙曲函數構成的單元，也能用於逼近非線性函數。本文不以神經網路為研究主體，而是由這個對照回到自然指數與矩陣生成元，追問哪些數學作用是共同的，哪些性質取決於表示與觀測方式。以 \( A_\varepsilon^2=\varepsilon I \) 的二維生成元為核心，本文連接圓周旋轉、雙曲變換、冪零剪切及其射影動力學，並以 Lorentz boost 作為雙曲生成元的一個簡短對照，辨認同一線性流的二次型不變性與射影非線性讀出；高階張量誘導作用僅作為後續研究線索。傅立葉分析、`tanh` 函數與神經學習僅作為跨領域的具體案例，展示線性縮併、非線性讀出、高階導數與梯度作用如何在不同場景中出現。
+傅立葉級數可以把許多簡單的圓周運動組合成複雜曲線；神經網路也能利用簡單的函數單元組合出豐富的輸入—輸出關係。這兩種現象帶出一個共同問題：一個函數的形狀與複雜性，究竟有多少來自基本作用，有多少來自作用的組合與表示方式？
 
-文章核心觀察是：**非線性函數的外觀，未必對應同樣複雜的底層生成作用；線性矩陣流經由分量比值所形成的射影表示，可以呈現明確的非線性動力學。** 然而，這不能推論「所有非線性都只是表示假象」，也不能從雙曲函數的存在便宣稱神經網路具有 Lorentz 對稱性。本文刻意區分數學恆等式、已知理論與進一步研究的開放性問題。
+本文從指數函數作為線性微分方程的解開始，導出矩陣指數 \( e^{tA} \)，以 \( A_\varepsilon^2=\varepsilon I \)（\( \varepsilon=-1,0,+1 \)）的二維生成元，比較圓周旋轉、冪零剪切與雙曲變換。接著觀察軌跡分量之比 \( r=Y/X \)，推導出 \( \dot r=1-\varepsilon r^2 \)，說明線性演化為何在射影座標中呈現 \( \tan t \)、\( t \) 與 \( \tanh t \)。傅立葉模態、Lorentz boost、Logistic 函數與 `tanh` 神經單元在這條推導中分別提供不同的數學觀察窗口。最後再以張量積的誘導生成元、高階導數外積及簡要的梯度更新，辨認維度、張量階數、函數表示與學習動力學之間的關係。
+
+本札記以可逐步驗算的既有數學結果，建立一條跨領域的理解路徑；其核心是**生成元、表示、射影與組合如何改變我們所看到的函數結構**。讀者只需熟悉基本的函數、矩陣乘法與微分；文中的「生成元」會從微分方程引入，「射影」會從斜率 \( Y/X \) 說起，而「張量積」則從兩個向量分量的乘積理解。
 
 ---
 
-## 1. 研究起點：從繪圖的圓周模態，走向可學習的函數單元
+## 1. 從兩種熟悉的函數組合出發
 
-最初的直觀問題是：為什麼簡單的等速圓周運動，疊加後能畫出繁複線條？若將平面曲線寫為複數值函數
+### 1.1 為什麼圓周運動能畫出複雜曲線？
 
-$$
-z(t)=x(t)+iy(t),
-$$
-
-則一條適當參數化的閉合曲線可由傅立葉部分和逼近：
+平面上一個半徑為 \( R \)、角速度為 \( \omega \) 的圓周運動，可以寫成
 
 $$
-z(t)\approx\sum_{n=-N}^{N}c_n e^{int}.
+(x(t),y(t))=(R\cos\omega t,R\sin\omega t).
+$$
+
+用複數合併兩個座標，便得到
+
+$$
+z(t)=x(t)+iy(t)=Re^{i\omega t}.
 \tag{1.1}
 $$
 
-每個 \( e^{int} \) 只是固定角速度的旋轉模態；複雜性藏在係數與各模態的合成關係裡。對 \( L^2 \) 週期函數，其部分和在均方意義下收斂；若要求逐點或一致收斂，需要相應的附加正則性條件。
-
-另一方面，使用 `tanh` 的單隱藏層網路可寫為
+現在讓多個旋轉向量的終點首尾相接。若第 \( n \) 個向量有自己的幅度與相位，合成位置就是
 
 $$
-f_N(\mathbf x)
-=\sum_{a=1}^{m}v_a\tanh(\mathbf w_a\cdot\mathbf x+b_a)+c.
+z_N(t)=\sum_{n=-N}^{N}c_ne^{int}.
 \tag{1.2}
 $$
 
-這兩個式子立即引發三個不同問題：
+每個單元都只是等速旋轉，合成軌跡卻可以形成細緻的輪廓。複數係數 \( c_n \) 的絕對值決定旋轉向量的長度，幅角決定初始方向；正負整數 \( n \) 則表示相反的旋轉方向。這裡的 \( t \) 是沿著曲線移動的參數，對閉合圖形可自然取為一個週期。對週期平方可積函數，這些傅立葉部分和在均方意義下逼近原函數；對足夠光滑的曲線，可得到更強的收斂性質。若有尖角或不連續的週期接縫，往往需要更多高頻項。
 
-1. **表示問題**：不同基本函數是否可以共同寫成簡單的縮併與疊加？
-2. **生成問題**：正弦、餘弦與 `tanh` 是否具有可比較的矩陣指數來源？
-3. **學習問題**：神經網路改變權重時，是否能以張量與頻譜方式描述函數形狀的演化？
+這裡的關鍵並不是「圓周本身很複雜」，而是**簡單模態的組合係數可以承載複雜的形狀資訊**。
 
-本文依序討論，而不將三種問題混成一個「等價性」主張。
+### 1.2 一個不同的例子：`tanh` 函數單元
 
-## 2. 傅立葉：平移作用的模態表示
-
-選用下列 \( d \) 維傅立葉轉換慣例：
+單隱藏層神經網路可以表示為
 
 $$
-\widehat f(\mathbf k)
-=\int_{\mathbb R^d}f(\mathbf x)e^{-ik_i x^i}\,d^d x,
-\qquad
-f(\mathbf x)
-=\frac{1}{(2\pi)^d}
-\int_{\mathbb R^d}\widehat f(\mathbf k)e^{ik_i x^i}\,d^d k.
+f_N(\mathbf x)=\sum_{a=1}^{m}v_a\tanh(\mathbf w_a\cdot\mathbf x+b_a)+c.
+\tag{1.3}
+$$
+
+每一個 `tanh` 單元先用權重選擇輸入方向與尺度，再產生一條平滑的 S 型轉折；許多單元相加，可以組合出複雜的函數形狀。這與傅立葉疊加共享「基本函數加權組合」的形式，但兩者差別同樣明顯：傅立葉使用預先指定的週期頻率，神經網路則能調整 \( \mathbf w_a \)、\( b_a \) 與 \( v_a \)。對適當的緊緻定義域，具有非多項式激活函數的單隱藏層網路具有熟知的普遍逼近結果。[1–3]
+
+兩個例子引導我們回到一個更基本的問題：**為什麼三角函數與雙曲函數都和自然指數密切相關？** 若能先理解指數函數所描述的作用，再觀察不同讀出方式，這兩種函數表示的關係就會清楚許多。
+
+## 2. 從自然指數到矩陣指數：線性作用如何生成
+
+### 2.1 指數函數是最簡單的連續演化解
+
+考慮一個純量隨參數 \( t \) 演化，變化率與當前數值成正比：
+
+$$
+\frac{dz}{dt}=az,\qquad z(0)=z_0.
+$$
+
+它的解是 \( z(t)=e^{at}z_0 \)。原因在於 \( \frac{d}{dt}e^{at}=ae^{at} \)；更重要的是，時間分段相加對應作用相乘：
+
+$$
+e^{a(t+s)}=e^{at}e^{as}.
 \tag{2.1}
 $$
 
-這裡 \( k_i x^i \) 是對偶向量與向量的縮併；在通常的 Euclidean 直角座標下也寫成 \( \mathbf k\cdot\mathbf x \)。如果把積分視為連續索引的縮併，傅立葉轉換核為
+若狀態不只有一個數，而是向量 \( \mathbf z(t) \)，將常數 \( a \) 換成線性算子（矩陣）\( A \)：
 
 $$
-\mathcal K(\mathbf k,\mathbf x)=e^{-ik_i x^i},
-\qquad
-\widehat f(\mathbf k)
-=\int\mathcal K(\mathbf k,\mathbf x)f(\mathbf x)\,d^dx.
+\frac{d\mathbf z}{dt}=A\mathbf z,\qquad \mathbf z(0)=\mathbf z_0.
 \tag{2.2}
-$$
-
-有限維離散傅立葉轉換則是
-
-$$
-\widehat f_m=F_m{}^n f_n.
-\tag{2.3}
-$$
-
-所以它可理解為一個線性映射；但「具有兩個索引的矩陣」不應直接等同於某個物理時空中的二階張量。此處的索引首先標記輸入與輸出表示空間。
-
-傅立葉模態之所以特殊，在於平移作用：
-
-$$
-e^{ik(x+a)}=e^{ika}e^{ikx}.
-\tag{2.4}
-$$
-
-因此複數指數是平移算子的本徵函數。對適當的函數與邊界條件，微分變成頻域的乘法：
-
-$$
-\mathcal F[\partial_i f]=ik_i\widehat f,
-\qquad
-\mathcal F[\partial_i\partial_j f]=-k_i k_j\widehat f.
-\tag{2.5}
-$$
-
-這是傅立葉表示在微分方程中尤其有用的原因之一；不是因為它消除了所有複雜性，而是因為它在平移對稱的線性問題中，能有效對角化作用算子。
-
-## 3. 神經單元：線性縮併後的非線性映射
-
-設輸入向量為 \( x^i \)，神經單元 \( a \) 的預激活量與輸出為
-
-$$
-u^a=W^a{}_i x^i+b^a,
-\qquad
-h^a=\tanh(u^a).
-\tag{3.1}
-$$
-
-一個線性輸出層給出
-
-$$
-y=v_a h^a+c.
-\tag{3.2}
-$$
-
-在固定座標與內積慣例下，\( W^a{}_i \) 是從輸入空間到隱藏層空間的線性映射分量。`tanh` 則逐分量作用，**通常不會在任意隱藏層基底變換下仍保有相同的逐分量形式**。這一點是討論一般張量協變性時的重要限制。
-
-單隱藏層 `tanh` 網路具有普遍逼近能力：對適當緊緻定義域中的連續函數，可以使用足夠多的單元，在一致範數下達成任意精度的逼近。然而，**存在某組參數**不代表一般訓練演算法必然找到該組參數，也不代表所需單元數在所有高維問題中都很小。[1–3]
-
-從表示形式看，傅立葉合成與單隱藏層網路都屬於
-
-$$
-\boxed{
- f(\mathbf x)=\sum_a c_a\,\phi_a(q_{ai}x^i+b_a)
-}
-\tag{3.3}
-$$
-
-這一類函數合成，但不能因此忽略固定基底與可學習參數的差異。
-
-## 4. 回到自然指數：三種二維生成元
-
-為了把三角函數與雙曲函數的關係看得更清楚，考慮以下統一生成元。須先區分：自然指數函數本身並不是張量；當指數作用於線性算子或其誘導表示時，才形成可在不同張量空間中研究的變換：
-
-$$
-A_\varepsilon=
-\begin{pmatrix}0&\varepsilon\\1&0\end{pmatrix},
-\qquad
-A_\varepsilon^2=\varepsilon I,
-\qquad
-\varepsilon\in\{-1,0,+1\}.
-\tag{4.1}
 $$
 
 矩陣指數由冪級數定義：
 
 $$
-e^{tA_\varepsilon}
-=\sum_{n=0}^{\infty}\frac{t^n A_\varepsilon^n}{n!}.
-\tag{4.2}
+e^{tA}=I+tA+\frac{t^2A^2}{2!}+\frac{t^3A^3}{3!}+\cdots.
+\tag{2.3}
 $$
 
-將偶數冪與奇數冪分開後，可以寫成
+逐項微分得到 \( \frac{d}{dt}e^{tA}=Ae^{tA} \)，所以
 
 $$
-e^{tA_\varepsilon}
-=\begin{pmatrix}
-C_\varepsilon(t)&\varepsilon S_\varepsilon(t)\\
-S_\varepsilon(t)&C_\varepsilon(t)
-\end{pmatrix},
-\tag{4.3}
+\boxed{\mathbf z(t)=e^{tA}\mathbf z_0.}
+\tag{2.4}
 $$
 
-其中
+對固定 \( A \)，仍有 \( e^{(t+s)A}=e^{tA}e^{sA} \)。因此 \( A \) 是這一族連續線性變換的**生成元**；\( e^{tA} \) 則是由它生成的有限變換。這一點讓我們可以先研究簡單的代數關係，再看它產生什麼函數與幾何。矩陣指數及線性微分系統的標準推導可參考文獻 [8, 9]。
 
-| \( \varepsilon \) | \( C_\varepsilon(t) \) | \( S_\varepsilon(t) \) | 生成元型態 | 幾何直觀 |
-|---|---|---|---|---|
-| \( -1 \) | \( \cos t \) | \( \sin t \) | 橢圓型（elliptic） | 圓周旋轉 |
-| \( 0 \) | \( 1 \) | \( t \) | 拋物型（parabolic） | 剪切／冪零流 |
-| \( +1 \) | \( \cosh t \) | \( \sinh t \) | 雙曲型（hyperbolic） | 雙曲變換 |
+### 2.2 三種二維生成元，只差一個平方關係
 
-三種 \( A_\varepsilon \) 都具有零跡，因而 \( \det e^{tA_\varepsilon}=1 \)，屬於 \( SL(2,\mathbb R) \) 的單參數子群。這是既有李群理論中很基本的分類範例，不是新構造。
+選擇一族特別簡單的矩陣：
 
-取初始向量 \( (1,0)^T \)：
+$$
+A_\varepsilon=\begin{pmatrix}0&\varepsilon\\1&0\end{pmatrix},
+\qquad A_\varepsilon^2=\varepsilon I,
+\qquad \varepsilon\in\{-1,0,+1\}.
+\tag{2.5}
+$$
+
+因為偶數冪變成 \( \varepsilon^nI \)，奇數冪變成 \( \varepsilon^nA_\varepsilon \)，矩陣指數可按偶、奇冪分組：
+
+$$
+e^{tA_\varepsilon}=C_\varepsilon(t)I+S_\varepsilon(t)A_\varepsilon
+=\begin{pmatrix}C_\varepsilon(t)&\varepsilon S_\varepsilon(t)\\S_\varepsilon(t)&C_\varepsilon(t)\end{pmatrix}.
+\tag{2.6}
+$$
+
+| \( \varepsilon \) | \( C_\varepsilon(t) \) | \( S_\varepsilon(t) \) | 矩陣作用的樣貌 |
+|---:|---|---|---|
+| \( -1 \) | \( \cos t \) | \( \sin t \) | 圓周旋轉（橢圓型） |
+| \( 0 \) | \( 1 \) | \( t \) | 剪切（冪零／拋物型） |
+| \( +1 \) | \( \cosh t \) | \( \sinh t \) | 雙曲變換（雙曲型） |
+
+例如 \( \varepsilon=-1 \) 時，\( A^2=-I \) 讓偶數冪交替出現正負號，因此產生 \( \cos t \) 與 \( \sin t \)；\( \varepsilon=+1 \) 時，偶數冪沒有交替符號，因此產生 \( \cosh t \) 與 \( \sinh t \)。這正是 Euler 公式 \( e^{it}=\cos t+i\sin t \) 在實二維矩陣中的對應結構。
+
+從純量指數來看，這裡還有一個容易被忽略的連結。三角函數與雙曲函數分別可由含虛數與實數的指數組合而成：
+
+$$
+\cos t=\frac{e^{it}+e^{-it}}{2},\qquad
+\cosh t=\frac{e^t+e^{-t}}{2}.
+$$
+
+把變數延伸到複數，就有
+
+$$
+\boxed{\cos t=\cosh(it),\qquad
+\sin t=-i\sinh(it),\qquad
+\tanh(it)=i\tan t.}
+$$
+
+因此，兩類函數可以透過**解析延拓**聯繫：在公式中把實參數換成虛參數，可以從雙曲函數走到三角函數。然而，在實數二維空間中，\( A_{-1}^2=-I \) 與 \( A_{+1}^2=I \) 仍對應不同的實矩陣流；前者保持圓周型二次式，後者保持雙曲型二次式。解析公式彼此連通，不等於兩種實幾何作用沒有差別。
+
+### 2.3 不變量使幾何性質變得可見
+
+讓三種矩陣流作用於同一個初始向量：
 
 $$
 \begin{pmatrix}X(t)\\Y(t)\end{pmatrix}
-=e^{tA_\varepsilon}
-\begin{pmatrix}1\\0\end{pmatrix}
+=e^{tA_\varepsilon}\begin{pmatrix}1\\0\end{pmatrix}
 =\begin{pmatrix}C_\varepsilon(t)\\S_\varepsilon(t)\end{pmatrix}.
-\tag{4.4}
+\tag{2.7}
 $$
 
-它滿足
+由生成元直接讀出：
 
 $$
-\dot X=\varepsilon Y,
-\qquad
-\dot Y=X,
-\qquad
-X^2-\varepsilon Y^2=1.
-\tag{4.5}
+\dot X=\varepsilon Y,\qquad \dot Y=X.
+\tag{2.8}
 $$
 
-對 \( \varepsilon=-1 \)，最後一式是圓周不變量 \( X^2+Y^2=1 \)；對 \( \varepsilon=+1 \)，是雙曲不變量 \( X^2-Y^2=1 \)；對 \( \varepsilon=0 \)，它退化為 \( X^2=1 \)，描述冪零流的特殊情況。這裡的「不變量」屬於指定的矩陣群作用，不能未經論證就當作任意物理系統的守恆量。
-
-### 4.1 雙曲生成元的不同表示：Lorentz boost 與 `tanh`
-
-雙曲型生成元有兩種很容易互相對照、但不能混為同一個物理命題的讀法。令
+因此
 
 $$
-K=A_{+1}=\begin{pmatrix}0&1\\1&0\end{pmatrix},
-\qquad \eta=\begin{pmatrix}1&0\\0&-1\end{pmatrix},
-\qquad
-\Lambda(t)=e^{tK}=\begin{pmatrix}\cosh t&\sinh t\\\sinh t&\cosh t\end{pmatrix}.
+\frac{d}{dt}(X^2-\varepsilon Y^2)
+=2X(\varepsilon Y)-2\varepsilon YX=0.
 $$
 
-因 \( K^T\eta+\eta K=0 \)，有
+配合初值，得到
 
 $$
-\boxed{\Lambda(t)^T\eta\Lambda(t)=\eta.}
-\tag{4.6}
+\boxed{X^2-\varepsilon Y^2=1.}
+\tag{2.9}
 $$
 
-**線性作用的讀法**：在 \( (1+1) \) 維 Minkowski 度規與本文符號慣例下，這就是以快度為參數的一維 Lorentz boost。**射影讀出的讀法**：同一矩陣流作用於 \( (1,0)^T \)，得到 \( X=\cosh t \)、\( Y=\sinh t \)；取比值 \( h(t)=Y/X=\tanh t \)。參數再增加 \( s \) 時，
+\( \varepsilon=-1 \) 是單位圓，\( \varepsilon=0 \) 是直線 \( X=1 \)，\( \varepsilon=+1 \) 則是雙曲線右支。幾何軌跡的差異，就這樣由生成元平方關係與同一個初始條件導出。三個生成元都具有零跡，所生成的矩陣行列式均為 \( 1 \)，亦可視為 \( SL(2,\mathbb R) \) 單參數子群的基本例子。
+
+## 3. 讓二維線性流變成非線性函數：射影讀出
+
+### 3.1 為什麼要看 \( Y/X \)？
+
+沿著上一節的軌跡，現在改問另一件事：**從原點望向運動中的點 \( (X,Y) \)，這條直線的斜率是多少？**
+
+只要 \( X\ne0 \)，斜率便是
 
 $$
-\boxed{h(t+s)=\frac{h(t)+\tanh s}{1+h(t)\tanh s}}.
-\tag{4.7}
+\boxed{r(t)=\frac{Y(t)}{X(t)}.}
+\tag{3.1}
 $$
 
-這是 Möbius 分式線性作用，也與一維相對論速度合成律具有相同的代數形式（相對速度的方向與正負號仍依慣例而定）。對一般 `tanh` 神經單元，\( t=w_ix^i+b \)、\( s \) 可以只是預激活量的增量；**此處沒有把神經網路的輸入當成物理快度，也沒有宣稱網路具有 Lorentz 等變性**。式 (4.7) 的三分流版本見後面的式 (5.4)。
+把經過原點與 \( (X,Y) \) 的整條直線延伸到 \( X=1 \)，交點是 \( (1,r) \)。這就是射影座標的一個具體幾何圖像。因為從原點望向 \( (X,Y) \)，即使把兩個座標同時乘上非零常數，視線方向也不變；射影表示保留的是「方向」，不再分別記錄兩個分量的大小。這裡用的是**視線直線的斜率**，而非曲線本身的切線斜率。若 \( X=0 \)，此座標暫時失效，可改用另一張射影座標圖。
 
-為保留張量研究主線，僅記下一個誘導表示：若 \( T^{ij} \) 是二階逆變張量，則
+![圖 1：圓周、直線與雙曲流及其射影讀出](figure-01-generator-flows-projective-readouts.png)
 
-$$
-\begin{aligned}
-T'^{ij}&=\Lambda^i{}_p\Lambda^j{}_qT^{pq},\\
-\Lambda^{\otimes2}&=e^{t(K\otimes I+I\otimes K)}.
-\end{aligned}
-\tag{4.8}
-$$
+*圖 1．三種矩陣指數流的平面軌跡（上排）及斜率函數 \( r=Y/X \)（下排）。同一個初始條件，經不同生成元得到圓周、直線與雙曲線；射影後分別得到 \( \tan t \)、\( t \) 與 \( \tanh t \)。圖中示意的是原點連線的射影斜率，不是軌跡切線。*
 
-這裡的生成元加總 \( K\otimes I+I\otimes K \)，本質上就是**乘積微分法則（Leibniz rule）在張量積上的表現**：當 \( \dot v=Kv \)、\( \dot w=Kw \)，對 \( v\otimes w \) 求時間導數，會讓 \( K \) 分別作用在兩個張量槽位上。
+### 3.2 一次商數微分，得到三種非線性方程
 
-![圖 1：乘積微分法則與張量積上的誘導生成元](figure-01-tensor-product-leibniz-generator.png)
-
-*圖 1．張量積的誘導生成元。\( v\otimes w \) 的時間導數分成 \( (Kv)\otimes w+v\otimes(Kw) \)，因此得到 \( K\otimes I+I\otimes K \)。生成元逐一作用於張量槽位，並未改變底層向量空間的維度。*
-
-這說明同一生成元可以提升到較高階的張量作用，但**張量階數的增加不等於原空間維度的增加**。一般 \( r \) 階及混合協、逆變指標的完整誘導表示，另留給專門的張量札記；本文不在此展開相對論主題。
-
-## 5. 核心推導：線性矩陣流如何成為非線性射影動力學
-
-現在只觀察兩個分量的比值
-
-$$
-r(t)=\frac{Y(t)}{X(t)},\qquad X(t)\ne0.
-\tag{5.1}
-$$
-
-**幾何直觀。** \( r(t) \) 是從原點連到運動點 \( (X(t),Y(t)) \) 的**射線斜率**。當 \( X(t)\ne0 \) 時，沿這條直線與 \( X=1 \) 相交，便得到 \( (1,r(t)) \)；換句話說，我們是以射影座標讀取二維的線性軌跡。這裡的 \( Y/X \) **不是軌跡本身的切線斜率**。
-
-![圖 2：三種矩陣流及其射影讀出](figure-02-generator-flows-projective-readouts.png)
-
-*圖 2．相同初始條件 \( (X(0),Y(0))=(1,0) \) 下的線性矩陣流（上排）及射影函數（下排）：圓周型（藍色）對應 \( r=\tan t \)、冪零型（橘色）對應 \( r=t \)、雙曲型（綠色）對應 \( r=\tanh t \)。虛線射線與紫色標記表示 \( t=0.7 \) 時投影至 \( X=1 \) 的幾何讀出。圖示範圍為 \( -1.2\le t\le1.2 \)；圓周流在 \( X=0 \) 處的 \( \tan t \) 極點位於此區間之外，它是射影座標圖的奇異點，而非底層圓周軌跡發散。*
-
-使用商數微分法則及式 (4.5)：
+利用式 (2.8)，對 \( r=Y/X \) 求導：
 
 $$
 \begin{aligned}
@@ -272,463 +210,438 @@ $$
 &=\frac{X^2-\varepsilon Y^2}{X^2}\\
 &=1-\varepsilon r^2.
 \end{aligned}
-\tag{5.2}
+\tag{3.2}
 $$
 
-因此三種情況自然給出：
+所以：
 
 $$
 \boxed{
 \begin{array}{c|c|c}
-\varepsilon&r(t)&\dot r(t)\\\hline
+\varepsilon&r(t)&\dot r\\\hline
 -1&\tan t&1+r^2\\
 0&t&1\\
 +1&\tanh t&1-r^2
-\end{array}
-}
-\tag{5.3}
+\end{array}}
+\tag{3.3}
 $$
 
-其中 \( \tan t \) 的表示僅在 \( \cos t\ne0 \) 的射影座標圖上成立；跨越其極點需要更換射影座標圖。
+原來只要改變線性生成元的平方關係，便會在比值座標中形成三種不同函數。底層的 \( (X,Y) \) 仍滿足**線性**微分方程；所看到的非線性，則來自對分量取比值的表示方式。\( \tan t \) 的極點對應 \( X=0 \)，是這張座標圖的邊界，而非圓周軌跡在平面中爆炸。相對地，雙曲支線上的 \( X(t)=\cosh t\ge1 \) 對所有實數 \( t \) 都不為零，因此 \( \tanh t=Y/X \) 在整條實數軸上都可使用，而且 \( |\tanh t|<1 \)。這個**沒有實極點、輸出有界**的特性，是 `tanh` 適合作為平滑激活函數的理由之一；它也帶來飽和區域梯度變小的另一面，後文 §9 再討論。從 §2.2 的複數解析延拓再往前看，\( \tanh z \) 的極點位於 \( z=i(\pi/2+n\pi) \)（\( n \) 為整數），都在虛軸上；而 \( \tan z \) 的極點位於 \( z=\pi/2+n\pi \)。這讓「實軸上無極點」與兩類函數的解析關係相互呼應。
 
-**整理性命題（已知結果的基本特例）：** 由滿足 \( A_\varepsilon^2=\varepsilon I \) 的線性矩陣流 \( e^{tA_\varepsilon} \)，在適當分量比值座標中可誘導 Riccati 型動力學 \( \dot r=1-\varepsilon r^2 \)。
+### 3.3 一般矩陣流與 Riccati 方程
 
-這裡的「非線性」是指在 \( r \) 座標中的演化方程出現二次項；底層 \( (X,Y) \) 的演化仍然是線性的。兩種敘述不矛盾，因為我們已更換了表示變數。這也不表示所有非線性系統都能經由有限維線性化消除其非線性。
-
-甚至它們的參數合成律也具有共同形式：
-
-$$
-\boxed{
- r(t+s)=\frac{r(t)+r(s)}{1+\varepsilon r(t)r(s)}
-}
-\tag{5.4}
-$$
-
-這個公式適用於分母不為零且相關射影座標有效的情況；它分別包含正切加法、線性加法與雙曲正切加法。
-
-### 5.1 一般線性生成元如何給出 Riccati 方程
-
-若使用任意常數矩陣
+這種現象可以直接推廣。設
 
 $$
 A=\begin{pmatrix}a&b\\c&d\end{pmatrix},
 \qquad
-\frac{d}{dt}\begin{pmatrix}X\\Y\end{pmatrix}
-=A\begin{pmatrix}X\\Y\end{pmatrix},
+\begin{pmatrix}\dot X\\\dot Y\end{pmatrix}=A\begin{pmatrix}X\\Y\end{pmatrix}.
 $$
 
-則 \( r=Y/X \) 滿足
+同樣對 \( Y/X \) 求導，得到
 
 $$
 \boxed{\dot r=c+(d-a)r-br^2.}
-\tag{5.5}
+\tag{3.4}
 $$
 
-因此前述的三分流不是偶然的函數巧合，而是二維線性流在射影直線上的標準作用結構。[8]
+這是 Riccati 型方程。換句話說，**二維線性流在射影直線上的作用，天然給出一類二次非線性方程**。Riccati 微分方程的專門背景可參考 Reid [10]；本文的射影化公式則已由上面的商數微分直接推得。
 
-### 5.2 Sigmoid：相同雙曲流的另一個射影讀出
-
-常見 Logistic 函數與雙曲正切的精確關係為
+三種基本函數的參數合成還遵守同一個形式：
 
 $$
-\boxed{\sigma(u)=\frac{1}{1+e^{-u}}
-=\frac{1+\tanh(u/2)}2.}
-\tag{5.6}
+\boxed{r(t+s)=\frac{r(t)+r(s)}{1+\varepsilon r(t)r(s)}.}
+\tag{3.5}
 $$
 
-可從雙曲流的本徵座標直接看出這個關係。令 \( p(u)=e^{-u/2} \)、\( q(u)=e^{u/2} \)，則 \( (p,q)^T \) 是對角生成元 \( B=\operatorname{diag}(-1/2,1/2) \) 所產生的線性流；取正規化分量
+\( \varepsilon=-1 \)、\( 0 \)、\( +1 \) 分別給出正切加法、普通加法與雙曲正切加法；所有式子均需在所用分母非零的座標區域內理解。
+
+## 4. 同一個雙曲生成元，可以有不同的數學讀法
+
+### 4.1 從 `tanh` 到 Logistic
+
+對 \( \varepsilon=+1 \) 的雙曲流，令 \( K=A_{+1} \)。作用於 \( (1,0)^T \) 後，
 
 $$
-\boxed{s(u)=\frac{q(u)}{p(u)+q(u)}=\sigma(u),
-\qquad \frac{ds}{du}=s(1-s).}
-\tag{5.7}
+(X,Y)=(\cosh u,\sinh u),\qquad \frac{Y}{X}=\tanh u.
+\tag{4.1}
 $$
 
-若改用 \( X=(p+q)/2 \)、\( Y=(q-p)/2 \)，就有 \( r=Y/X=\tanh(u/2) \)，且 \( s=(1+r)/2 \)。這是雙曲線性作用在不同射影讀出、及不同參數尺度下的表現：\( r \) 的不動點為 \( \{-1,1\} \)，\( s \) 的不動點為 \( \{0,1\} \)。這裡的仿射變換也是 Möbius 變換的特例。
-
-此例的用意在於辨認**生成元、座標選擇及非線性讀出**的不同角色。Softmax 的高維正規化與單純形幾何具有可比性，但其多維結構宜另成一篇札記，本文不在此展開。
-
-## 6. 對 tanh 神經單元而言，射影表示直接接上了學習梯度
-
-現在把 \( t \) 換成神經單元的預激活量
+神經網路常見的 Logistic 函數與 `tanh` 有精確的仿射關係：
 
 $$
-u=w_i x^i+b.
+\boxed{\sigma(u)=\frac{1}{1+e^{-u}}=\frac{1+\tanh(u/2)}{2}.}
+\tag{4.2}
+$$
+
+這個式子可以從同一雙曲流的**本徵座標**理解：在對角化的座標中，兩個獨立分量分別按 \( e^{-u/2} \) 與 \( e^{u/2} \) 伸縮。令 \( z_-(u)=e^{-u/2} \)、\( z_+(u)=e^{u/2} \)，再把這兩個正分量的總和正規化為 \( 1 \)：
+
+$$
+\sigma(u)=\frac{z_+(u)}{z_-(u)+z_+(u)},
+\qquad \boxed{\sigma'(u)=\sigma(u)[1-\sigma(u)]}.
+\tag{4.3}
+$$
+
+`Sigmoid` 的輸出區間是 \( (0,1) \)，`tanh` 的輸出區間是 \( (-1,1) \)；兩者可理解為雙曲指數作用在不同射影／正規化座標中的表示，參數尺度相差一個因子 \( 2 \)。這也說明，選擇何種讀出座標，會改變不動點在數軸上的位置：前者在 \( 0,1 \)，後者在 \( -1,1 \)。
+
+### 4.2 Lorentz boost：保存二次型的線性讀法
+
+同一雙曲生成元，在 \( (1+1) \) 維 Minkowski 度規中也有一個熟悉的身分。令
+
+$$
+K=\begin{pmatrix}0&1\\1&0\end{pmatrix},\quad
+\eta=\begin{pmatrix}1&0\\0&-1\end{pmatrix},\quad
+\Lambda(u)=e^{uK}
+=\begin{pmatrix}\cosh u&\sinh u\\\sinh u&\cosh u\end{pmatrix}.
+$$
+
+因 \( K^T\eta+\eta K=0 \)，便有
+
+$$
+\boxed{\Lambda(u)^T\eta\Lambda(u)=\eta.}
+\tag{4.4}
+$$
+
+這是以快度 \( u \) 參數化的一維 Lorentz boost（正負方向由慣例決定）。當我們觀察完整矩陣的作用時，看到的是**二次型不變性**；當我們取演化向量的分量比值時，看到的是 **`tanh` 射影函數**。它們共同使用雙曲生成元，卻回答不同的數學問題。
+
+例如預激活參數增加 \( s \)，有
+
+$$
+\boxed{\tanh(u+s)=\frac{\tanh u+\tanh s}{1+\tanh u\,\tanh s}.}
+\tag{4.5}
+$$
+
+這與一維相對論速度合成具有相同的分式線性形式。對一般神經單元而言，\( u \) 只是實數預激活量；這個對照使用的是共同代數結構，不需要替神經輸入賦予物理快度。
+
+## 5. 當作用對象是張量：生成元如何自然升階
+
+前面討論的 \( e^{tA} \) 作用於一個向量，例如二維狀態 \( (X,Y) \)。現在考慮兩個向量的張量積 \( v\otimes w \)。它可以理解為一張由分量乘積 \( v^i w^j \) 排成的表，保留兩個向量之間的雙線性關係；這與把原始平面由二維改成四維物理空間是兩回事。
+
+若我們要觀察**同一個線性作用如何作用在多個張量槽位上**，只需要從最熟悉的乘積微分法則開始。
+
+假設兩個向量各自遵守
+
+$$
+\dot v=Av,\qquad\dot w=Aw.
+$$
+
+則張量積的導數是
+
+$$
+\begin{aligned}
+\frac{d}{dt}(v\otimes w)
+&=\dot v\otimes w+v\otimes\dot w\\
+&=(A\otimes I+I\otimes A)(v\otimes w).
+\end{aligned}
+\tag{5.1}
+$$
+
+因此二階張量積上的生成元是
+
+$$
+\boxed{A^{(2)}=A\otimes I+I\otimes A,\qquad
+ e^{tA^{(2)}}=e^{tA}\otimes e^{tA}.}
+\tag{5.2}
+$$
+
+![圖 2：張量積與 Leibniz 法則](figure-02-tensor-product-leibniz-generator.png)
+
+*圖 2．乘積微分法則在張量積上的直接表現：生成元 \( A \) 分別作用於兩個槽位，再將貢獻相加，形成 \( A\otimes I+I\otimes A \)。*
+
+對 \( p \) 個逆變張量槽位，同樣得到
+
+$$
+\boxed{A^{(p)}=\sum_{j=1}^{p}I^{\otimes(j-1)}\otimes A\otimes I^{\otimes(p-j)}.}
+\tag{5.3}
+$$
+
+例如二階逆變張量的分量轉換是 \( T'^{ij}=\Lambda^i{}_{\alpha}\Lambda^j{}_{\beta}T^{\alpha\beta} \)。協變指標則要使用對偶作用；若改變座標或度規，也需按張量類型作適當處理。
+
+這裡可清楚區分：底層向量空間維度 \( d \)、張量階數 \( p \) 與完整張量積空間維度 \( d^p \) 並不是同一個概念。**增加張量階數，改變的是多線性作用的槽位數，不是把原本的幾何空間強行增加維度。**
+
+本節的 \( A^{(p)} \) 作用於**狀態空間的張量積**（例如本篇二維流的 \( V^{\otimes p} \)）。後面 §7 還會出現 \( q^{\otimes p} \)：那是函數對**輸入變數**求 \( p \) 階導數後，屬於輸入空間對偶的對稱張量。這兩者的空間與用途不同；它們的接點是「由矩陣流產生純量函數，再用鏈式法則對輸入求導」，而不是把兩種張量直接視為相等。
+
+## 6. 回到傅立葉：旋轉生成元為什麼適合表示平移？
+
+由式 (2.5) 的 \( \varepsilon=-1 \)，令
+
+$$
+J=\begin{pmatrix}0&-1\\1&0\end{pmatrix},\qquad J^2=-I.
+$$
+
+它的矩陣指數就是二維旋轉矩陣：
+
+$$
+e^{\theta J}=\begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix}.
 \tag{6.1}
 $$
 
-在 \( \varepsilon=+1 \) 的雙曲型情況：
+若將平面視為複數平面，同一作用可寫為 \( e^{i\theta} \)。這讓 Fourier 模態 \( e^{ikx} \) 具有一項特別簡潔的性質：平移 \( x\mapsto x+a \)，只會帶來相位因子
 
 $$
-\begin{pmatrix}X\\Y\end{pmatrix}
-=e^{uA_{+1}}\begin{pmatrix}1\\0\end{pmatrix}
-=\begin{pmatrix}\cosh u\\\sinh u\end{pmatrix},
-\quad
-h=\frac{Y}{X}=\tanh u.
+e^{ik(x+a)}=e^{ika}e^{ikx}.
 \tag{6.2}
 $$
 
-由式 (5.2)：
+因此，若定義平移算子 \( \mathsf T_a f(x)=f(x+a) \)，傅立葉模態便是它的**本徵函數**，本徵值為 \( e^{ika} \)：平移輸入只改變複數相位。同樣是把自變量平移 \( a \)，第 4 節的 `tanh` 卻給出另一種形式。這兩種表示可以直接並排觀察：
+
+| 同一件事：\( x\mapsto x+a \) | 傅立葉模態 \( z=e^{ikx} \) | 雙曲射影座標 \( r=\tanh x \) |
+|---|---|---|
+| 平移後的值 | \( z'=e^{ika}z \) | \( r'=\dfrac{r+\tanh a}{1+r\tanh a} \) |
+| 作用形式 | 複數平面中的相位旋轉 | 射影直線上的 Möbius 變換 |
+| 參數如何合成 | 相位角 \( ka \) 可相加 | 雙曲參數 \( a \) 可相加 |
+
+兩者都把**實數加法的平移參數**表成一族可連續合成的作用：一者作用於複數振幅，一者作用於射影比值。共同之處是合成律，不是說旋轉與雙曲射影是同一個實線性變換。
+
+傅立葉分析正是利用這些模態，將函數拆為不同頻率的合成。在 \( d \) 維空間，採用轉換慣例
 
 $$
-\boxed{
-\frac{dh}{du}
-=1-h^2
-=\frac{1}{X^2}
-=\operatorname{sech}^2u
-}
+\widehat f(\mathbf k)=\int_{\mathbb R^d}f(\mathbf x)e^{-ik_i x^i}\,d^dx,
+\qquad
+f(\mathbf x)=\frac{1}{(2\pi)^d}\int_{\mathbb R^d}\widehat f(\mathbf k)e^{ik_i x^i}\,d^dk.
 \tag{6.3}
 $$
 
-這裡得到一個格外清楚的連結：**神經單元導數的門控因子 \( 1-h^2 \)，正是雙曲矩陣流之射影座標的變化率。** 當 \( |u| \) 很大時，\( X=\cosh u \) 變大，於是 \( 1/X^2 \) 變小，呈現熟知的 `tanh` 飽和與梯度抑制。
+其中 \( k_i x^i \) 是向量與對偶向量的縮併。此處先假設 \( f \) 足夠規則，讓積分與反演有通常的意義；更一般的 \( L^2 \) 或分布情形需採用對應的函數空間架構。
 
-它是一個可直接檢驗的恆等式，但不應寫成新發現的神經學習規律。
-
-對單筆資料，若網路為
+使用核 \( \mathcal K(\mathbf k,\mathbf x)=e^{-ik_i x^i} \)，傅立葉轉換是一個線性積分算子；離散後可表示成 \( \widehat f_m=F_m{}^nf_n \)。更有用的是，在適當邊界與正則條件下：
 
 $$
-y=v_a h^a+c,
-\qquad
-L=\frac12(y-y_\ast)^2,
-\qquad
-e=y-y_\ast,
+\boxed{\mathcal F[\partial_i f]=ik_i\widehat f,\qquad
+\mathcal F[\partial_i\partial_j f]=-k_i k_j\widehat f.}
 \tag{6.4}
 $$
 
-則由鏈式法則
+所以原本的微分作用，在頻域可轉為頻率向量的乘法與外積。這也說明了傅立葉方法在平移對稱線性微分問題中為何特別有效；若原問題含非線性乘積，頻域一般會出現卷積與模態耦合。
+
+## 7. 函數單元的共同張量骨架
+
+現在將傅立葉模態與 `tanh` 單元放到同一個表示形式中。先設輸入向量 \( \mathbf x \) 屬於 \( E=\mathbb R^d \)，再由每個對偶向量 \( q_a \) 選出一個純量輸入 \( u_a \)：
 
 $$
-\frac{\partial L}{\partial W^a{}_i}
-=e\,v_a\bigl[1-(h^a)^2\bigr]x^i.
-\tag{6.5}
-$$
-
-設
-
-$$
-\delta_a=e\,v_a\bigl[1-(h^a)^2\bigr],
-$$
-
-便有
-
-$$
-\boxed{
-\frac{\partial L}{\partial W^a{}_i}=\delta_a x^i.
-}
-\tag{6.6}
-$$
-
-也就是單筆資料的權重梯度為一個向量外積（秩至多為一）；小批次更新是此類外積的加總。此處的「外積張量」是由梯度運算導出的代數結構，不代表整個多層學習動力學都是線性的。
-
-### 6.1 激活函數只是觀察窗口：飽和、門控與其他生成機制
-
-`tanh` 的兩端飽和，使 \( h'=1-h^2\to0 \)；Sigmoid 同樣具有飽和導數。這說明基本函數的導數性質會影響梯度傳播，但深層網路的梯度也取決於權重矩陣與層間 Jacobian 的組合。現代常見的 SiLU（Swish）是一個簡潔的延伸例子：
-
-$$
-\phi_{\mathrm{SiLU}}(u)=u\sigma(u),\qquad
-\phi_{\mathrm{SiLU}}'(u)
-=\sigma(u)+u\sigma(u)(1-\sigma(u)).
-\tag{6.7}
-$$
-
-它把近似線性的通道與平滑門控相乘；正向大輸入時斜率趨近 \( 1 \)。ReLU 的分段線性作用、GELU 的**高斯累積分布**門控，以及多通道乘積架構，則各有不同的精確數學機制；GELU 的 `tanh` 寫法只是常用近似，不能宣稱它們全都由同一個二維常係數雙曲生成元產生。本篇到此為止，相關分類、乘積張量及訓練特質保留為其他獨立札記。
-
-## 7. 共同的高階導數張量骨架
-
-考慮一般形式
-
-$$
-f(\mathbf x)=\sum_a c_a\phi_a(u_a),
-\qquad u_a=q_{ai}x^i+b_a.
+\boxed{f(\mathbf x)=\sum_{a}c_a\phi_a(u_a),\qquad
+u_a=q_{ai}x^i+b_a.}
 \tag{7.1}
 $$
 
-由重複使用鏈式法則，在固定仿射座標與常數 \( q_{ai} \) 下：
+這時才適合銜接 §5 的兩種張量：§5 的 \( A^{(p)} \) 作用在**狀態空間** \( V \) 的張量積；本節對 \( \mathbf x \) 求導，則產生**輸入空間** \( E \) 上的導數張量。若選擇 \( \phi_a(u_a)=\tanh u_a \)，函數便可依序理解為 \( \mathbf x\to u_a\to(X(u_a),Y(u_a))\to Y(u_a)/X(u_a) \)。矩陣流先提供純量函數，鏈式法則再描述它對輸入的敏感程度。兩種張量由此串接，卻不是同一個對象。
+
+\( \phi_a \) 可以是複數指數、正弦、雙曲正切或其他足夠可微的純量函數。先把輸入沿 \( q_a \) 方向縮併為一個純量，再施加函數映射，最後加權求和。這類結構在函數逼近文獻中與 *ridge functions*（嶺函數）密切相關。[2,4]
+
+由鏈式法則，一階導數是
 
 $$
-\boxed{
-\partial_{i_1}\cdots\partial_{i_r}f
-=\sum_a c_a\phi_a^{(r)}(u_a)
-q_{ai_1}\cdots q_{ai_r}.
-}
+\partial_i f=\sum_a c_a\phi_a'(u_a)q_{ai},
+$$
+
+二階導數（Hessian，描述各個輸入方向的斜率如何改變）則是
+
+$$
+\boxed{\partial_i\partial_j f=\sum_a c_a\phi_a''(u_a)q_{ai}q_{aj}.}
 \tag{7.2}
 $$
 
-對二階導數尤其清楚：
+所以單一單元對 Hessian 的貢獻，是一個純量係數乘上 \( q_a\otimes q_a \)，其矩陣秩至多為一。繼續微分可得到
 
 $$
-H_{ij}
-=\sum_a c_a\phi_a''(u_a)q_{ai}q_{aj}.
+\boxed{\partial_{i_1}\cdots\partial_{i_p}f
+=\sum_a c_a\phi_a^{(p)}(u_a)
+q_{ai_1}\cdots q_{ai_p}.}
 \tag{7.3}
 $$
 
-傅立葉單元 \( \phi(u)=e^{iu} \) 給出
+這裡 \( q_{ai_1}\cdots q_{ai_p} \) 是輸入空間對偶 \( E^* \) 的 \( p \) 階對稱張量分量。它與 §5 的誘導生成元 \( A^{(p)} \) 不同：前者記錄函數對輸入方向的敏感程度，後者記錄線性變換如何同時作用於多個張量槽位。
+
+更有趣的是，**共同的外積骨架之外，兩類函數各有自己的導數代數**。對 Fourier 單元 \( \phi(u)=e^{iu} \)：
 
 $$
-H^{(F)}_{ij}
-=-\sum_a c_a e^{iu_a}k_{ai}k_{aj};
-\tag{7.4}
+\phi^{(p)}(u)=i^p\phi(u).
 $$
 
-`tanh` 單元 \( \phi(u)=\tanh u \) 則給出
+一次微分只乘上 \( i \)，因此指數模態對微分作用具有本徵函數性質。對 `tanh`，令 \( h=\tanh u \)，§3 已經給出 \( h'=1-h^2 \)，接著利用鏈式法則：
 
 $$
-H^{(N)}_{ij}
-=\sum_a v_a\tanh''(u_a)w_{ai}w_{aj}.
-\tag{7.5}
+\begin{aligned}
+h''&=-2h(1-h^2),\\
+h^{(3)}&=-2(1-h^2)(1-3h^2).
+\end{aligned}
 $$
 
-每個非零單元項都具有對稱秩一的外積形式；由多項相加後，整體 Hessian 的秩可以更高。更高階亦可由 \( q_a^{\otimes r} \) 表示。
-
-必須分清以下三件事：
-
-- **輸入維度 \( d \)**：\( \mathbf x \) 所在向量空間的維度。
-- **張量階數 \( r \)**：此處表示對輸入求導的次數，對應 \( r \) 個指標。
-- **模態數／神經單元數 \( m \)**：參與相加的項數，不是張量階數。
-
-這個區分對多維函數逼近與張量研究都很重要。但如果加入多層複合、位置依賴的權重、非線性座標變換或曲流形協變導數，式 (7.2) 就不能不加條件地沿用；屆時會出現額外的鏈式法則或連接項。
-
-## 8. tanh 的傅立葉表示：可以轉換，但不等於學習過程相同
-
-`tanh` 是奇函數，因而其適當的正弦積分表示可以寫為
+每次微分之後仍是 \( h \) 的多項式。若定義 \( P_0(h)=h \)，便可用下列規則逐階計算：
 
 $$
-\boxed{
-\tanh x
-=\int_0^\infty\frac{\sin(\omega x)}{\sinh(\pi\omega/2)}\,d\omega.
-}
+\boxed{P_{p+1}(h)=(1-h^2)\frac{dP_p(h)}{dh},\qquad
+\frac{d^p}{du^p}\tanh u=P_p(\tanh u).}
+$$
+
+所以傅立葉模態的導數是「**固定模態乘上常數**」，而 `tanh` 的導數是「**由 Riccati 關係封閉生成的多項式**」。兩者都能套用式 (7.3)，但它們如何改變外積前的係數，具有明確差別。這裡所說的封閉，是指多項式代數在這個微分規則下封閉，並不表示所有導數張成固定有限維的線性空間。
+
+應同時分清：輸入維度 \( d \) 是 \( \mathbf x \) 的分量數，張量階數 \( p \) 是導數指標數，單元數 \( m \) 是求和項數。這是在固定仿射座標、常數權重與單層函數合成下的明確結果；多層函數複合或協變微分則需要完整的鏈式法則與相關連接項，不能只沿用式 (7.3)。
+
+## 8. 一個有趣的來回轉換：`tanh` 也有傅立葉表示
+
+`tanh` 是奇函數，對實數 \( x \) 有精確的正弦積分表示：
+
+$$
+\boxed{\tanh x=\int_0^\infty\frac{\sin(\omega x)}{\sinh(\pi\omega/2)}\,d\omega.}
 \tag{8.1}
 $$
 
-其中 \( x \) 為實數；這是連續頻率的積分表示，而非離散週期傅立葉級數。需注意 \( \tanh x \) 在整條實線上不屬於 \( L^1 \) 或 \( L^2 \)；嚴謹處理其傅立葉轉換時可先處理導數，或採分布的觀點。
-
-由
+這不是把 `tanh` 變成另一個物理機制，而是在另一組函數表示中描述相同的曲線。推導可以先從可積分的導數開始：
 
 $$
-\frac{d}{dx}\tanh x=\operatorname{sech}^2x,
-$$
-
-依式 (2.1) 的轉換慣例，有
-
-$$
-\boxed{
-\mathcal F[\operatorname{sech}^2x](\omega)
-=\frac{\pi\omega}{\sinh(\pi\omega/2)}.
-}
+\frac{d}{dx}\tanh x=\operatorname{sech}^2x,\qquad
+\mathcal F[\operatorname{sech}^2x](\omega)=\frac{\pi\omega}{\sinh(\pi\omega/2)}.
 \tag{8.2}
 $$
 
-高頻 \( |\omega|\to\infty \) 時，右側以指數速度衰減。若單元改成 \( \tanh(wx+b) \)，其尺度與平移會改變所隱含的頻率權重及相位；但這並不是說權重學習等價於逐頻率獨立調整傅立葉係數。
+由傅立葉反演再對 \( x \) 積分，便得到式 (8.1)；其正規化係數在附錄 B 核對。平滑轉折的導數具有快速衰減的高頻成分，而把有限區間上的 `tanh` **直接週期延拓**，會在端點形成跳躍，產生較慢衰減的傅立葉係數與 Gibbs 現象。
 
-還有一項看似矛盾、實則十分重要的差異：
+這個例子清楚提醒我們：**頻譜不只與函數形狀有關，也與定義域、邊界接續方式和分析對象（函數本身或導數）有關。**
 
-- 在整條實線上研究平滑的 `tanh` 導數，其傅立葉振幅具有快速高頻衰減。
-- 若把區間 \( [-\pi,\pi] \) 的 `tanh` 取樣後直接做**週期延拓**，兩端產生跳躍接縫；其正弦級數係數便通常只有 \( O(1/n) \) 的衰減，並在接縫附近呈現 Gibbs 現象。
+## 9. 從函數導數到參數更新：神經學習中的張量例子
 
-所以討論「高頻受限」時，必須先說清楚**函數空間、邊界條件、所觀察的函數／導數，以及頻譜範圍**。單由平滑 `tanh` 的特性，不能直接宣稱物理系統具有高頻截止。
-
-## 9. 從表示走向學習：梯度流與頻譜演化
-
-傅立葉係數通常是在指定的基底中分析函數；神經網路則會改變單元方向 \( w_{ai} \)、位置 \( b_a \) 與組合權重 \( v_a \)。若將所有參數統稱為 \( \theta \)，連續梯度流為
+回到式 (1.3)，單一神經元的預激活量可寫成 \( u^a=W^a{}_ix^i+b^a \)，輸出是 \( h^a=\tanh u^a \)。從射影方程 (3.2) 立即得到
 
 $$
-\dot\theta=-\nabla_\theta L.
+\boxed{\frac{dh^a}{du^a}=1-(h^a)^2=\operatorname{sech}^2u^a.}
 \tag{9.1}
 $$
 
-對足夠光滑的損失函數，沿精確梯度流有
+\( |u^a| \) 很大時，導數趨近零，這是 `tanh` 飽和所造成的局部梯度抑制。若令 \( y=v_ah^a+c \)、單筆平方損失 \( L=\tfrac12(y-y_\ast)^2 \)，則
 
 $$
-\frac{dL}{dt}
-=\nabla_\theta L\cdot\dot\theta
-=-\|\nabla_\theta L\|^2\le0.
+\frac{\partial L}{\partial W^a{}_i}
+=(y-y_\ast)v_a[1-(h^a)^2]x^i.
 \tag{9.2}
 $$
 
-這是一個李雅普諾夫型下降關係；但它只保證損失沿理想梯度流非增加，**不自動保證參數收斂至全域最優解**。若使用離散步長、動量、噪聲、非光滑操作或時變資料，仍需另行檢驗穩定性。
-
-考慮平方損失
+將前面的係數記為 \( \delta_a \)，便得到
 
 $$
-L(\theta)=\frac12\int
-\bigl[f_\theta(x)-f_\ast(x)\bigr]^2\,d\mu(x)
-$$
-
-及誤差 \( e_\theta(x)=f_\theta(x)-f_\ast(x) \)。鏈式法則給出
-
-$$
-\partial_t f_\theta(x)
-=-\int K_\theta(x,x')e_\theta(x')\,d\mu(x'),
+\boxed{\nabla_W L=\boldsymbol\delta\otimes\mathbf x.}
 \tag{9.3}
 $$
 
-其中
+對一筆資料，權重梯度矩陣是秩至多為一的外積；小批次時則為外積之和。這讓「參數學習」也呈現了可直接辨認的張量結構。
+
+若以連續梯度流 \( \dot\theta=-\nabla_\theta L \) 描述理想化學習，則
 
 $$
-\boxed{
-K_\theta(x,x')
-=\sum_p
-\frac{\partial f_\theta(x)}{\partial\theta_p}
-\frac{\partial f_\theta(x')}{\partial\theta_p}.
-}
+\boxed{\frac{dL}{dt}=-\|\nabla_\theta L\|^2\le0.}
 \tag{9.4}
 $$
 
-這是有限維參數下的神經切線核（NTK）表示，相關理論已有成熟研究。[5]
+它是損失沿梯度流的下降關係。更深入的 NTK、頻譜偏向與特徵學習問題，可以另外研究；附錄 C 只列出通往這些研究的最基本公式。[5–7]
 
-**只有在附加條件下**，我們才可將學習的誤差動力學簡化為逐頻率演化：例如在週期空間中，使用平移不變的測度，並且核固定、平移不變，\( K(x,x')=\kappa(x-x') \)。此時傅立葉模態對角化核算子：
+常見激活函數也說明同一個原則：Sigmoid 是 `tanh` 的仿射變換；SiLU \( u\sigma(u) \) 是線性因子與平滑門控的乘積；ReLU 具有分段線性結構；GELU 精確涉及高斯累積分布。不同函數具有不同的導數與組合特性，適合留給另一篇專門比較生成方式與張量耦合的札記。
 
-$$
-\partial_t\widehat e_n(t)
-=-\lambda_n\widehat e_n(t),
-\qquad
-\widehat e_n(t)=e^{-\lambda_n t}\widehat e_n(0).
-\tag{9.5}
-$$
+## 10. 回到共同的數學結構
 
-但在一般有限寬度、特徵學習中的網路，\( K_\theta \) 可能隨訓練改變，也不必然平移不變；頻率之間可能耦合。所謂頻譜偏向（spectral bias）是特定架構、初始化、資料與訓練條件下的重要現象，並非無條件普遍定律。[6–7]
+這一趟從繪圖、自然指數、矩陣流走到射影與張量，得到的不是把不同領域併成一個理論，而是一套更容易辨認各層次作用的讀法。
 
-## 10. 對稱性與拘束：兩者相似處的界線
+| 數學層次 | 代表關係 | 它讓我們看見什麼？ |
+|---|---|---|
+| 生成元 | \( \dot{\mathbf z}=A\mathbf z \) | 基本線性演化規則 |
+| 矩陣指數 | \( e^{tA} \) | 有限參數作用與組合律 |
+| 不變結構 | \( X^2-\varepsilon Y^2=1 \) | 作用所保存的二次型或退化拘束 |
+| 射影讀出 | \( r=Y/X \) | 線性流的非線性座標表示 |
+| 模態疊加 | \( \sum c_a\phi_a \) | 簡單函數如何組合複雜形狀 |
+| 張量誘導 | \( A\otimes I+I\otimes A \) | 基本作用如何進入多個槽位 |
+| 高階微分 | \( \sum c_a\phi_a^{(p)}q_a^{\otimes p} \) | 函數幾何的對稱外積結構 |
+| 參數演化 | \( \dot\theta=-\nabla L \) | 表示單元如何在學習中改變 |
 
-這一輪比較至少需要區分四個層次：
+上述每一列都有明確的前提：射影座標需要分母不為零；傅立葉轉換涉及函數空間與邊界條件；誘導張量表示依賴指標類型；梯度下降涉及損失與所採用的動力學。這些條件是數學結構的一部分，也使跨領域的比較保持可檢驗性。
 
-| 層次 | 傅立葉 | `tanh` 神經單元 | 不宜混淆之處 |
-|---|---|---|---|
-| 基本生成 | 複數指數／旋轉生成元 | 雙曲生成元的射影比值 | 函數同源不等於作用等價 |
-| 對稱結構 | 平移模態可對角化 | 平移可由偏置改變表示 | 參數族封閉不等於每一單元是本徵函數 |
-| 張量結構 | \( k^{\otimes r} \) | \( w^{\otimes r} \) | 模態數不等於張量階數 |
-| 動力學 | 傅立葉變換本身無訓練 | 權重受損失梯度驅動 | 表示能力不等於學習機制 |
+最後值得繼續追問的問題，不是「哪一個領域才是其他領域的真正來源」，而是：**哪些表現差異來自生成元、哪些來自表示與觀測、哪些來自張量組合，哪些又必須依靠額外的動力學與拘束才能決定？**
 
-上述比較只針對本文選定的兩類函數單元；第 5.2 節的 Logistic 正規化與第 6.1 節的 SiLU 門控，是為了顯示同一類指數結構可有不同讀出與組合方式，**並非激活函數的一般分類定理**。
-
-### 10.1 關於 Lorentz 類比
-
-第 4.1 節引用 Lorentz boost，只為展示**同一雙曲生成元的兩種讀出**：線性矩陣 \( e^{tK} \) 保存二次型 \( X^2-Y^2 \)，而分量比值 \( Y/X \) 給出 `tanh`，參數相加則在比值座標中表現為 Möbius 作用。式 (4.8) 順帶提示生成元可誘導高階張量表示，而不是本文的物理推導主軸。
-
-一般神經單元中的 \( w_i \)、偏置與逐分量 `tanh` **不會僅憑這些公式就滿足 Lorentz 協變性、物理上的速度合成律或守恆定律**。數學上的生成元同型，必須與具體物理量、度規及對稱要求清楚區分。
-
-### 10.2 關於「非線性只是投影」
-
-`tanh` 可由線性矩陣流經射影座標得到，但這不能倒推出所有非線性動力學都可由有限維線性系統完全表示。更不能抹除多層網路的函數複合、訓練與正則化所帶來的非線性效應。
-
-### 10.3 關於高頻與自然界
-
-數學表示中的頻譜快速衰減，可能源於光滑性、解析性、邊界或基底選擇；物理上的容許頻譜則需要具體動力學、能量泛函與邊界條件推導。兩者有可比較的形式，但不可直接畫上等號。
-
-## 11. 研究觀察與後續可檢驗問題
-
-本文目前最值得保留的結果，並不是新公式，而是以下具體的結構串接：
-
-$$
-\boxed{
-\begin{gathered}
-A_\varepsilon^2=\varepsilon I
-\quad\longrightarrow\quad
-e^{tA_\varepsilon}\\[2mm]
-\downarrow\\[-1mm]
-(X,Y)\ \text{的線性演化及二次型不變量}\\[2mm]
-\downarrow\\[-1mm]
-r=Y/X,\quad \dot r=1-\varepsilon r^2\\[2mm]
-\downarrow\\[-1mm]
-\text{圓周／線性／雙曲函數表示}\\[2mm]
-\downarrow\\[-1mm]
-\text{函數單元疊加、張量導數與學習梯度}
-\end{gathered}
-}
-\tag{11.1}
-$$
-
-以下問題值得後續拆成獨立研究節點，本文並未解決這些問題。
-
-**問題 A｜生成元分類與函數族：** 對更一般的矩陣生成元、特定子群及不同射影空間，能否建立適合函數逼近的清晰分類？哪些條件只是座標描述，哪些對應真正不變的代數特徵？
-
-**問題 B｜高階導數張量的演化：** 對 \( f_\theta \) 及 \( \dot\theta=-\nabla L \)，能否明確寫下 \( \partial_t\nabla_x^r f_\theta \)，並檢視單隱藏層的對稱外積分解在多層網路中如何改變？
-
-**問題 C｜頻譜與張量耦合：** 比較模型學習中 \( w_a^{\otimes r} \) 的方向及係數變化與 \( \widehat f_\theta(k) \) 的頻譜變化，尋找可量測的關係，而不預設逐頻率獨立演化。
-
-**問題 D｜共同對稱的相容條件：** 若一個網路需要保留旋轉、平移或其他群作用，哪些權重約束、表示選擇及激活機制是必要的？逐分量 `tanh` 如何與指定群表示相容？
-
-**問題 E｜能量與學習穩定性：** 以損失泛函作為下降量，辨別梯度流的李雅普諾夫性質、真正的對稱守恆量（Noether 類結構）及函數空間中的可容許集合，避免將它們混作同一種「共同拘束」。
-
-這五個問題僅作為**未來獨立研究札記的入口**：其中生成元與射影幾何、函數乘積與張量結構、傅立葉頻譜、學習演化、共同對稱與拘束，應各自先處理一個清楚的數學命題，不在本篇合併成「神經學習的統一理論」。
-
-### 11.1 最小數值實驗規劃（部分已核對）
-
-1. 在同一圖中比較 \( e^{tA_{-1}} \)、\( e^{tA_0} \)、\( e^{tA_{+1}} \) 的 \( (X,Y) \) 與 \( r=Y/X \)，檢查式 (5.3)（已完成圖 2 的數值繪圖對照；這是既有恆等式的幾何視覺化，並非新的數值研究結果）。
-2. 數值核對 \( \tanh'(u)=1/\cosh^2u \)，並顯示飽和區域的梯度抑制。
-3. 用相同目標函數比較有限傅立葉合成與單隱藏層 `tanh` 的逼近；分別記錄參數量、誤差與頻譜，而非只比較函數圖形。
-4. 對指定資料訓練小型網路，追蹤 \( \widehat f_\theta(k) \) 與 Hessian 的特徵值；檢查何種條件下能觀察到近似逐頻率下降。
-
-目前已完成圖 2 的三種矩陣流幾何對照，以及附錄 B 的 `tanh` 正弦積分常數因子核對；這兩項都不是神經網路訓練實驗，其餘模型比較仍未執行。
-
-## 12. 結論與文章定位
-
-本篇想呈現的核心思想是：**一個複雜函數的外觀，不能直接代表生成它的作用規則同樣複雜。** 以自然指數與生成元代數為起點，圓周模態、雙曲線性流及其 Lorentz 對照、射影 `tanh`／Logistic 表示、張量導數與簡要的誘導作用，可以由少數明確的代數和微分關係串接起來。神經網路的梯度只是幫助讀者看見這種結構在另一個領域如何出現的例子。
-
-但「同一組數學工具可以描述多種對象」與「多種對象具有相同的物理或學習機制」是兩回事。本文最大的價值在於提供一條**可讀、可驗證、且適合跨領域比較的數學解釋路徑**，而不是提出新激活函數、新網路架構或新定理。
-
-文中的兩張幾何示意圖，使生成元與射影讀出的對應更加直觀。本文尚未處理嚴格的函數空間條件與系統性的文獻重疊分析，也還沒有提出具可檢驗新增推論的研究問題。
+這些問題可以逐一展開成獨立札記：生成元與射影幾何；函數乘積與複合；傅立葉頻譜與邊界；高階導數張量的參數演化；以及共同對稱、Noether 與李雅普諾夫型拘束。各篇先處理一個數學核心，再逐步建立它們的關係。
 
 ---
 
-## 附錄 A｜射影導數的快速核對
+## 附錄 A｜Riccati 與參數合成的快速驗算
 
-從
-
-$$
-\dot X=\varepsilon Y,\qquad \dot Y=X,
-\qquad X(0)=1,\quad Y(0)=0,
-$$
-
-得 \( \frac{d}{dt}(X^2-\varepsilon Y^2)=0 \)，所以不變量等於 \( 1 \)。在 \( X\neq0 \) 的範圍，
+從 \( \dot X=\varepsilon Y \)、\( \dot Y=X \) 與 \( r=Y/X \)，在 \( X\ne0 \) 時直接得
 
 $$
-\frac{d}{dt}\left(\frac{Y}{X}\right)
-=\frac{X^2-\varepsilon Y^2}{X^2}
-=1-\varepsilon\left(\frac{Y}{X}\right)^2.
+\dot r=(X^2-\varepsilon Y^2)/X^2=1-\varepsilon r^2.
 $$
 
-因此 \( \varepsilon=-1,0,+1 \) 分別對應 \( \tan t,t,\tanh t \)。如果希望延伸到其他矩陣，只需改用式 (5.5)。
+由 \( e^{(t+s)A}=e^{tA}e^{sA} \) 及式 (2.6)，可得
 
-## 附錄 B｜tanh 正弦積分的核對路徑
+$$
+C_\varepsilon(t+s)=C_\varepsilon(t)C_\varepsilon(s)+\varepsilon S_\varepsilon(t)S_\varepsilon(s),
+$$
 
-定義 \( g(x)=\operatorname{sech}^2x \)，則 \( g\in L^1(\mathbb R) \)，而
+$$
+S_\varepsilon(t+s)=S_\varepsilon(t)C_\varepsilon(s)+C_\varepsilon(t)S_\varepsilon(s).
+$$
+
+兩式相除即得到式 (3.5)。一般 Riccati 公式 (3.4) 則來自 \( \dot X=aX+bY \)、\( \dot Y=cX+dY \) 的商數微分。
+
+## 附錄 B｜`tanh` 的正弦積分與正規化係數
+
+令 \( g(x)=\operatorname{sech}^2x\in L^1(\mathbb R) \)，並使用式 (6.3) 的傅立葉慣例：
 
 $$
 \widehat g(\omega)=\frac{\pi\omega}{\sinh(\pi\omega/2)}.
 $$
 
-利用 \( \tanh x-\tanh0=\int_0^x g(s)\,ds \) 與傅立葉反演，可得到
+由 \( \tanh x-\tanh0=\int_0^xg(s)\,ds \)，反演後積分：
 
 $$
+\begin{aligned}
 \tanh x
-=\frac{1}{2\pi}\int_{\mathbb R}
-\widehat g(\omega)
-\frac{e^{i\omega x}-1}{i\omega}\,d\omega
-=\int_0^\infty
-\frac{\sin(\omega x)}{\sinh(\pi\omega/2)}\,d\omega.
+&=\frac{1}{2\pi}\int_{\mathbb R}\widehat g(\omega)
+\frac{e^{i\omega x}-1}{i\omega}\,d\omega\\
+&=\int_0^\infty\frac{\sin(\omega x)}{\sinh(\pi\omega/2)}\,d\omega.
+\end{aligned}
 $$
 
-在 \( \omega=0 \) 附近，最後一式的分子與分母同階，因此沒有不可積的奇點；在高頻端分母指數成長，使積分收斂。此處由 \( \frac{1}{2\pi} \)、偶對稱積分的因子 \( 2 \) 與 \( \widehat g \) 中的 \( \pi \) 相消，最後積分前的係數**確實為 \( 1 \)，不是 \( 1/2 \)**。
+偶對稱的實數部分使兩側頻率合併，係數 \( 1/(2\pi) \) 與 \( \widehat g \) 中的 \( \pi \) 及正負頻率因子 \( 2 \) 相消，故積分前係數為 \( 1 \)。作為數值交叉檢查：
 
-以 \( \omega\in[0,40] \) 做數值積分檢驗（其餘尾項在所列精度下可忽略）：
-
-| \( x \) | 正弦積分數值 | \( \tanh x \) |
+| \( x \) | 正弦積分 | \( \tanh x \) |
 |---:|---:|---:|
 | \( 0.7 \) | \( 0.604367777117 \) | \( 0.604367777117 \) |
 | \( 1.5 \) | \( 0.905148253645 \) | \( 0.905148253645 \) |
 
-因此式 (8.1) 的正規化常數維持不變；這只是公式核對，不構成新數學結果。
+## 附錄 C｜神經切線核與頻率演化：後續札記的接口
 
-## 附錄 C｜既有研究與文獻對照
+對平方損失
 
-以下文獻支持的主題不同，應避免合併敘述成單一「已經證明兩者等價」的結論。
+$$
+L(\theta)=\frac12\int\bigl[f_\theta(x)-f_\ast(x)\bigr]^2\,d\mu(x),
+$$
 
-1. **Cybenko, G. (1989).** “Approximation by Superpositions of a Sigmoidal Function.” *Mathematics of Control, Signals, and Systems*, 2, 303–314. [DOI: 10.1007/BF02551274](https://doi.org/10.1007/BF02551274)。提供 sigmoidal 單隱藏層網路的函數逼近基礎。
-2. **Barron, A. R. (1993).** “Universal Approximation Bounds for Superpositions of a Sigmoidal Function.” *IEEE Transactions on Information Theory*, 39(3), 930–945. [DOI: 10.1109/18.256500](https://doi.org/10.1109/18.256500)。將傅立葉條件與神經網路逼近誤差界連結。
-3. **Leshno, M., Lin, V. Ya., Pinkus, A., & Schocken, S. (1993).** “Multilayer Feedforward Networks with a Nonpolynomial Activation Function Can Approximate Any Function.” *Neural Networks*, 6(6), 861–867. [DOI: 10.1016/S0893-6080(05)80131-5](https://doi.org/10.1016/S0893-6080(05)80131-5)。說明激活函數條件與逼近能力。
-4. **Candès, E. J. (1999).** “Harmonic Analysis of Neural Networks.” *Applied and Computational Harmonic Analysis*, 6(2), 197–218. [DOI: 10.1006/acha.1998.0248](https://doi.org/10.1006/acha.1998.0248)。利用調和分析研究嶺函數表示與穩定變換；文中的 admissible 激活條件涉及振盪性，**不能簡化為一般 sigmoid 網路已被完全傅立葉化**。
-5. **Jacot, A., Gabriel, F., & Hongler, C. (2018).** “Neural Tangent Kernel: Convergence and Generalization in Neural Networks.” *NeurIPS 2018*. [會議論文](https://papers.nips.cc/paper_files/paper/2018/hash/5a4be1fa34e62bb8a6ec6b91d2462f5a-Abstract.html)。以核描述參數學習引起的函數演化。
-6. **Rahaman, N., et al. (2019).** “On the Spectral Bias of Neural Networks.” *ICML 2019*. [PMLR](https://proceedings.mlr.press/v97/rahaman19a.html)。用頻譜分析研究神經網路對不同頻率的學習速度。
-7. **Tancik, M., et al. (2020).** “Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains.” *NeurIPS 2020*. [會議論文](https://proceedings.neurips.cc/paper_files/paper/2020/hash/55053683268957697aa39fba6f231c68-Abstract.html)；**Sitzmann, V., et al. (2020).** “Implicit Neural Representations with Periodic Activation Functions.” *NeurIPS 2020*. [會議論文](https://proceedings.neurips.cc/paper_files/paper/2020/hash/53c04118df112c13a8c34b38343b9c10-Abstract.html)。展示傅立葉特徵與正弦激活在神經表示中的實務價值。
-8. **標準數學背景**：矩陣指數、\( SL(2,\mathbb R) \) 單參數子群、Möbius／射影作用、Riccati 方程與傅立葉分析，皆為既有數學理論。本文僅使用可由式 (4.1)–(5.5) 直接檢驗的基本特例，未另列系統性的教科書引用。
+設 \( \rho_\theta=f_\theta-f_\ast \) 為預測誤差。由梯度流與鏈式法則得到
+
+$$
+\partial_t f_\theta(x)=-\int \Theta_\theta(x,x')\rho_\theta(x')\,d\mu(x'),
+$$
+
+其中
+
+$$
+\Theta_\theta(x,x')=\sum_{\mu}\frac{\partial f_\theta(x)}{\partial\theta_\mu}
+\frac{\partial f_\theta(x')}{\partial\theta_\mu}.
+$$
+
+若核固定、平移不變、定義域週期化且測度相容，傅立葉模態可以對角化此核算子，得到 \( \partial_t\widehat\rho_n=-\lambda_n\widehat\rho_n \)。一般可學習的有限寬度網路中，核會隨參數改變，也可能使頻率耦合；這是另需研究的學習動力學問題。[5–7]
+
+## 附錄 D｜參考文獻
+
+1. **Cybenko, G. (1989).** “Approximation by Superpositions of a Sigmoidal Function.” *Mathematics of Control, Signals, and Systems*, 2, 303–314. [DOI](https://doi.org/10.1007/BF02551274).
+2. **Barron, A. R. (1993).** “Universal Approximation Bounds for Superpositions of a Sigmoidal Function.” *IEEE Transactions on Information Theory*, 39(3), 930–945. [DOI](https://doi.org/10.1109/18.256500).
+3. **Leshno, M., Lin, V. Ya., Pinkus, A., & Schocken, S. (1993).** “Multilayer Feedforward Networks with a Nonpolynomial Activation Function Can Approximate Any Function.” *Neural Networks*, 6(6), 861–867. [DOI](https://doi.org/10.1016/S0893-6080(05)80131-5).
+4. **Candès, E. J. (1999).** “Harmonic Analysis of Neural Networks.” *Applied and Computational Harmonic Analysis*, 6(2), 197–218. [DOI](https://doi.org/10.1006/acha.1998.0248).
+5. **Jacot, A., Gabriel, F., & Hongler, C. (2018).** “Neural Tangent Kernel: Convergence and Generalization in Neural Networks.” *NeurIPS 2018*. [Paper](https://papers.nips.cc/paper_files/paper/2018/hash/5a4be1fa34e62bb8a6ec6b91d2462f5a-Abstract.html).
+6. **Rahaman, N., et al. (2019).** “On the Spectral Bias of Neural Networks.” *ICML 2019*. [PMLR](https://proceedings.mlr.press/v97/rahaman19a.html).
+7. **Tancik, M., et al. (2020).** “Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains.” *NeurIPS 2020*. [Paper](https://proceedings.neurips.cc/paper_files/paper/2020/hash/55053683268957697aa39fba6f231c68-Abstract.html); **Sitzmann, V., et al. (2020).** “Implicit Neural Representations with Periodic Activation Functions.” *NeurIPS 2020*. [Paper](https://proceedings.neurips.cc/paper_files/paper/2020/hash/53c04118df112c13a8c34b38343b9c10-Abstract.html).
+8. **Hall, B. C. (2015).** *Lie Groups, Lie Algebras, and Representations: An Elementary Introduction*, 2nd ed., Graduate Texts in Mathematics 222, Springer. [DOI](https://doi.org/10.1007/978-3-319-13467-3). — 矩陣指數、生成元、李群與表示的基礎參考。
+9. **Teschl, G. (2012).** *Ordinary Differential Equations and Dynamical Systems*, Graduate Studies in Mathematics 140, American Mathematical Society. [DOI](https://doi.org/10.1090/gsm/140). — 線性微分系統、矩陣指數與動力學的基礎參考。
+10. **Reid, W. T. (1972).** *Riccati Differential Equations*, Mathematics in Science and Engineering 86, Academic Press. [出版社](https://shop.elsevier.com/books/riccati-differential-equations/reid/978-0-12-586250-9). — 純量與矩陣 Riccati 微分方程的專門參考文獻。
+
+### 延伸閱讀
+
+11. **Chen, R. T. Q., Rubanova, Y., Bettencourt, J., & Duvenaud, D. (2018).** “Neural Ordinary Differential Equations.” *NeurIPS 2018*. [Paper](https://proceedings.neurips.cc/paper/2018/hash/69386f6bb1dfed68692a24c8686939b9-Abstract.html). — 後續討論連續深度學習時的延伸閱讀。
+12. **Ganea, O., Bécigneul, G., & Hofmann, T. (2018).** “Hyperbolic Neural Networks.” *NeurIPS 2018*. [Paper](https://papers.nips.cc/paper/7780-hyperbolic-neural-networks). — 後續比較雙曲幾何神經架構的延伸閱讀；其 Poincaré 幾何方法與本文的雙曲生成元對照並非同一個構造。
