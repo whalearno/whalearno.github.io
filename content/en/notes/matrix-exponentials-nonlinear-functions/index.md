@@ -661,7 +661,7 @@ These five questions are only **starting points for separate future research not
 
 The three-branch matrix-flow comparison in Figure 2 has now been plotted, and the normalization constant of the `tanh` sine integral has been checked numerically in Appendix B. Neither is a neural-network training experiment; the remaining model comparisons listed above have not been carried out.
 
-## 12. Conclusions and Positioning of This Version
+## 12. Conclusions and Positioning
 
 The central thought of this note is that **the apparent complexity of a function does not directly establish comparable complexity in the rules that generate it**. Beginning with the natural exponential and generator algebra, we can connect circular modes, hyperbolic linear flows and their Lorentz comparison, projective `tanh`/logistic representations, tensor derivatives, and a brief induced tensor action through a small number of explicit algebraic and differential relations. Neural-network gradients merely offer one example of how similar structures appear in another discipline.
 
