@@ -160,7 +160,7 @@ MST-EUT began with the hope of bringing questions temporarily set aside by succe
 
 In the early stages of exploration, it was natural to begin with images of entropy fields, density, and flow. Tangible pictures help us formulate questions, but they can also tempt us to decide too early that nature must take the form of some particular medium.
 
-Recent work on tensor dimension and order, interaction mappings, and modes of representation suggests another sequence worth trying: **first ask which relationships must be preserved; then ask what physical pictures they can take.**
+Recent work on tensor dimension and order, interaction mappings, and modes of representation suggests another sequence worth trying: **first ask which relationships must be preserved; then ask what physical pictures those relationships can support.**
 
 Here, *interaction relationships* mean linear or nonlinear mappings, couplings, and evolution among tensor variables. They do not refer specifically to the action functional of variational calculus. MST-EUT's existing Core–Boundary–Leak field variables and variational framework remain an important baseline for examining these relationships. The newer work on representations allows us to ask more carefully what belongs to the physical interactions themselves and what belongs to the language used to express them.
 
@@ -186,6 +186,6 @@ To me, part of the joy of exploration lies in seeing which paths have begun to e
 
 Planck questioned black-body radiation, Einstein reconsidered simultaneity, and de Broglie brought periodicity and waves into the description of material particles. Each of these turning points shows that scientific progress comes not only from more accurate calculations, but also from asking familiar questions in a different way.
 
-We now possess extraordinarily successful theories of relativity and quantum phenomena. Precisely because of that success, it is worth looking carefully at which shared structures of nature they preserve—and which relationships of origin may still be hidden behind the formulas.
+We now possess extraordinarily successful theories of relativity and quantum phenomena. Precisely because of that success, it is worth looking carefully at which shared structures of nature they preserve—and which generative relationships may still be hidden behind the formulas.
 
 **When a formula becomes an axiom, the exploration does not end. It simply reminds us that some questions have found remarkably good ways of being answered, while others may only now be coming into view.**
